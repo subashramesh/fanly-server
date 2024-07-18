@@ -1,0 +1,494 @@
+
+============================================================================================
+                        Work Flow
+============================================================================================
+
+post Method:
+    https://focus.ind.in
+
+    /login?username=name&password=asdsd
+
+
+    /getMeetId?meetId='<First time Empty>'&type=2&AppType=15
+        cookies.FSID
+        cookies.FSNAME
+        
+        OutPut:
+			{
+                Resp:1,
+                ErrCode:0,
+                meetId:12345FS343423,
+                meetURL:"https://focus.ind.in/meet?meetId=12345FS343423",
+                RType:2
+            }
+
+  ->get method  /meet?uType=1&meetId=12345FS343423&AppType=15
+        cookies.FSID
+        cookies.FSNAME
+
+        OutPut:
+            {
+                Resp:1,
+                ErrCode:0,
+                Id:req.cookies.FSID,
+                EmailId:req.cookies.FSNAME,
+                Name:req.cookies.FSNAME,
+                MId:mId,
+                openType:openType
+            }
+
+    /checkRoom?rId=<ROOMID>
+        OutPut:
+			{
+                Resp:1,
+                ErrCode:0,
+                meetURL:"https://focus.ind.in/meet?meetId=12345FS343423"
+            }
+
+
+=============================
+
+    socket Connection:
+==============================
+    Socket Params:
+        {
+            userid: '220810',
+            sessionid: '220810FS1686982259168',
+            msgEvent: 'video-conference-demo',
+            socketCustomEvent: 'RTCMultiConMSG',
+            autoCloseEntireSession: 'false',
+            maxParticipantsAllowed: '100',
+            extra: {},
+            EIO: '4',
+            transport: 'websocket',
+            socketMessageEvent: 'video-conference-demo'
+        }
+
+    Socket Event :
+        socket.emit('check-presence', <roomid|sessionid>, callback);
+        callback(true|false, 1234456FS4543, {});
+
+        
+        let arg = {
+            sessionid: '220810FS1686982259168',
+            session: { audio: true, video: true, data: true },
+            mediaConstraints: { audio: true, video: true },
+            sdpConstraints: {
+                mandatory: { OfferToReceiveAudio: true, OfferToReceiveVideo: true },
+                optional: [ [Object] ]
+            },
+            streams: [ { streamid: '{5edefcd6-65d0-4b07-b133-b26f5497e672}', tracks: 2 } ],
+            extra: {},
+            identifier: '',
+            password: ''
+        }
+    'open-room'
+        socket.emit('open-room', arg,callback);
+        callback(true|false);
+
+    "asktojoin"
+        socket.emit('asktojoin', Input,callback);
+        Input:
+            {
+                roomId: '220810FS1687001308814',
+                userId: '22081',
+                message: 'askjoinbtn',
+                name: 'Metti',
+                sendTime: 1687001686981
+            }
+
+        socket.on("respasktojoin",VALUE:{
+            ownerId:rmownerId,
+            userId:uId,
+            MSG:msg,
+            name:name
+        }
+
+    "inviteAccept"
+        socket.emit('inviteAccept', arg,callback);
+        Input:
+            {
+                roomId: '220810FS1687001308814',
+                userId: '220810',
+                askJoinId: '22081',
+                askName: 'Metti'
+            }
+
+        OutPut:
+            socket.on("respInviteAccept",VALUE:{
+                Resp:1,                
+                ownerId:askedId,
+                userId:uId,
+                name:askName
+            })
+    
+    'join-room'
+        socket.emit('join-room', Input,callback);
+        callback(true|false);
+
+        Input:
+            {
+                sessionid: '220810FS1687001308814',
+                session: { audio: true, video: false, data: true },
+                mediaConstraints: { audio: { mandatory: [Object], optional: [] }, video: false },
+                sdpConstraints: {
+                    mandatory: { OfferToReceiveAudio: true, OfferToReceiveVideo: true },
+                    optional: [ [Object] ]
+                },
+                streams: [ { streamid: 'c64a4dd5-ec3f-4df3-9d4a-730d1d3966f2', tracks: 1 } ],
+                extra: {},
+                password: ''
+            }
+
+    "video-conference-demo"
+        socket.emit('video-conference-demo', Input,callback);
+        callback(true,userid)
+        Input:
+            {
+                remoteUserId: '220810FS1687001308814',
+                message: {
+                    newParticipationRequest: true,
+                    isOneWay: false,
+                    isDataOnly: false,
+                    localPeerSdpConstraints: { OfferToReceiveAudio: true, OfferToReceiveVideo: true },
+                    remotePeerSdpConstraints: { OfferToReceiveAudio: true, OfferToReceiveVideo: true }
+                },
+                sender: '22081',
+                name: 'Metti'
+            }
+
+        OutPut:            
+            socket.on('video-conference-demo',OutPut)
+            OutPut:
+                {
+                    remoteUserId: '220810FS1687001308814',
+                    message: {
+                        newParticipationRequest: true,
+                        isOneWay: false,
+                        isDataOnly: false,
+                        localPeerSdpConstraints: { OfferToReceiveAudio: true, OfferToReceiveVideo: true },
+                        remotePeerSdpConstraints: { OfferToReceiveAudio: true, OfferToReceiveVideo: true }
+                    },
+                    sender: '22081',
+                    name: 'Metti'
+                }
+=================================================
+    video-conference-demo => Input and OutPut:
+=================================================  
+
+video-conference-demo ====== 220810 =>
+        {
+            remoteUserId: '22081',
+            message: {
+                enableMedia: true,
+                userPreferences: {
+                    extra: {},
+                    localPeerSdpConstraints: [Object],
+                    remotePeerSdpConstraints: [Object],
+                    isOneWay: true,
+                    isDataOnly: false,
+                    dontGetRemoteStream: false,
+                    dontAttachLocalStream: false,
+                    connectionDescription: [Object]
+                }
+            },
+            name: 'palDurai',
+            sender: '220810'
+        }
+
+video-conference-demo ====== 22081 =>
+        {
+            remoteUserId: '220810',
+            message: {
+                readyForOffer: true,
+                userPreferences: {
+                extra: {},
+                localPeerSdpConstraints: [Object],
+                remotePeerSdpConstraints: [Object],
+                isOneWay: true,
+                isDataOnly: false,
+                dontGetRemoteStream: false,
+                dontAttachLocalStream: false,
+                connectionDescription: [Object],
+                streamsToShare: [Object]
+                }
+            },
+            name: 'Metti',
+            sender: '22081'
+        }
+
+video-conference-demo ====== 220810 =>
+    {
+    remoteUserId: '22081',
+    message: {
+        type: 'offer',
+        sdp: 'v=0\r\n' +
+        'o=mozilla...THIS_IS_SDPARTA-99.0 8878794843653851692 0 IN IP4 0.0.0.0\r\n' +
+        's=-\r\n' +
+        't=0 0\r\n' +
+        'a=fingerprint:sha-256 B2:A6:D1:B0:8D:2B:66:07:99:FA:A3:F9:4E:3E:09:84:3F:8B:4B:FC:E3:3C:22:A6:6E:D8:45:90:0F:6E:B7:6A\r\n' +
+        'a=group:BUNDLE 0 1 2\r\n' +
+        'a=ice-options:trickle\r\n' +
+        'a=msid-semantic:WMS *\r\n' +
+        'm=audio 9 UDP/TLS/RTP/SAVPF 109 9 0 8 101\r\n' +
+        'c=IN IP4 0.0.0.0\r\n' +
+        'a=sendrecv\r\n' +
+        'a=extmap:1 urn:ietf:params:rtp-hdrext:ssrc-audio-level\r\n' +
+        'a=extmap:2/recvonly urn:ietf:params:rtp-hdrext:csrc-audio-level\r\n' +
+        'a=extmap:3 urn:ietf:params:rtp-hdrext:sdes:mid\r\n' +
+        'a=fmtp:109 maxplaybackrate=48000;stereo=1;useinbandfec=1; stereo=1; sprop-stereo=1\r\n' +
+        'a=fmtp:101 0-15\r\n' +
+        'a=ice-pwd:73048deccd81ea81cd173f5a8067e10a\r\n' +
+        'a=ice-ufrag:fbc3d325\r\n' +
+        'a=mid:0\r\n' +
+        'a=msid:{f6e8e2cd-0ea4-436e-80e7-5a47e3a38ee1} {8cb8f2c2-6047-4c73-9c84-5808c0432cc2}\r\n' +
+        'a=rtcp-mux\r\n' +
+        'a=rtpmap:109 opus/48000/2\r\n' +
+        'a=rtpmap:9 G722/8000/1\r\n' +
+        'a=rtpmap:0 PCMU/8000\r\n' +
+        'a=rtpmap:8 PCMA/8000\r\n' +
+        'a=rtpmap:101 telephone-event/8000/1\r\n' +
+        'a=setup:actpass\r\n' +
+        'a=ssrc:4208606326 cname:{c39967f3-7952-4d8a-b816-89a1234e282a}\r\n' +
+        'm=video 9 UDP/TLS/RTP/SAVPF 121 120 124 125 126 127 97 98\n' +
+        'c=IN IP4 0.0.0.0\r\n' +
+        'a=sendrecv\r\n' +
+        'a=extmap:3 urn:ietf:params:rtp-hdrext:sdes:mid\r\n' +
+        'a=extmap:4 http://www.webrtc.org/experiments/rtp-hdrext/abs-send-time\r\n' +
+        'a=extmap:5 urn:ietf:params:rtp-hdrext:toffset\r\n' +
+        'a=extmap:6/recvonly http://www.webrtc.org/experiments/rtp-hdrext/playout-delay\r\n' +
+        'a=extmap:7 http://www.ietf.org/id/draft-holmer-rmcat-transport-wide-cc-extensions-01\r\n' +
+        'a=fmtp:126 profile-level-id=42e01f;level-asymmetry-allowed=1;packetization-mode=1\r\n' +
+        'a=fmtp:97 profile-level-id=42e01f;level-asymmetry-allowed=1\r\n' +
+        'a=fmtp:120 max-fs=12288;max-fr=60\r\n' +
+        'a=fmtp:124 apt=120\r\n' +
+        'a=fmtp:120 x-google-min-bitrate=256; x-google-max-bitrate=256\r\n' +
+        'a=fmtp:121 max-fs=12288;max-fr=60\r\n' +
+        'a=fmtp:125 apt=121\r\n' +
+        'a=fmtp:127 apt=126\r\n' +
+        'a=fmtp:98 apt=97\r\n' +
+        'a=ice-pwd:73048deccd81ea81cd173f5a8067e10a\r\n' +
+        'a=ice-ufrag:fbc3d325\r\n' +
+        'a=mid:1\r\n' +
+        'a=msid:{f6e8e2cd-0ea4-436e-80e7-5a47e3a38ee1} {6bc4142b-6cab-4e85-a944-ef5bb2af0c96}\r\n' +
+        'a=rtcp-fb:120 nack\r\n' +
+        'a=rtcp-fb:120 nack pli\r\n' +
+        'a=rtcp-fb:120 ccm fir\r\n' +
+        'a=rtcp-fb:120 goog-remb\r\n' +
+        'a=rtcp-fb:120 transport-cc\r\n' +
+        'a=rtcp-fb:121 nack\r\n' +
+        'a=rtcp-fb:121 nack pli\r\n' +
+        'a=rtcp-fb:121 ccm fir\r\n' +
+        'a=rtcp-fb:121 goog-remb\r\n' +
+        'a=rtcp-fb:121 transport-cc\r\n' +
+        'a=rtcp-fb:126 nack\r\n' +
+        'a=rtcp-fb:126 nack pli\r\n' +
+        'a=rtcp-fb:126 ccm fir\r\n' +
+        'a=rtcp-fb:126 goog-remb\r\n' +
+        'a=rtcp-fb:126 transport-cc\r\n' +
+        'a=rtcp-fb:97 nack\r\n' +
+        'a=rtcp-fb:97 nack pli\r\n' +
+        'a=rtcp-fb:97 ccm fir\r\n' +
+        'a=rtcp-fb:97 goog-remb\r\n' +
+        'a=rtcp-fb:97 transport-cc\r\n' +
+        'a=rtcp-mux\r\n' +
+        'a=rtcp-rsize\r\n' +
+        'a=rtpmap:120 VP8/90000\r\n' +
+        'a=rtpmap:124 rtx/90000\r\n' +
+        'a=rtpmap:121 VP9/90000\r\n' +
+        'a=rtpmap:125 rtx/90000\r\n' +
+        'a=rtpmap:126 H264/90000\r\n' +
+        'a=rtpmap:127 rtx/90000\r\n' +
+        'a=rtpmap:97 H264/90000\r\n' +
+        'a=rtpmap:98 rtx/90000\r\n' +
+        'a=setup:actpass\r\n' +
+        'a=ssrc:3474938050 cname:{c39967f3-7952-4d8a-b816-89a1234e282a}\r\n' +
+        'a=ssrc:79934965 cname:{c39967f3-7952-4d8a-b816-89a1234e282a}\r\n' +
+        'a=ssrc-group:FID 3474938050 79934965\r\n' +
+        'm=application 9 UDP/DTLS/SCTP webrtc-datachannel\r\n' +
+        'c=IN IP4 0.0.0.0\r\n' +
+        'a=sendrecv\r\n' +
+        'a=ice-pwd:73048deccd81ea81cd173f5a8067e10a\r\n' +
+        'a=ice-ufrag:fbc3d325\r\n' +
+        'a=mid:2\r\n' +
+        'a=setup:actpass\r\n' +
+        'a=sctp-port:5000\r\n' +
+        'a=max-message-size:1073741823\r\n',
+        remotePeerSdpConstraints: { OfferToReceiveAudio: true, OfferToReceiveVideo: true },
+        renegotiatingPeer: false,
+        connectionDescription: {
+        remoteUserId: '220810',
+        message: [Object],
+        sender: '22081',
+        name: 'Metti'
+        },
+        dontGetRemoteStream: false,
+        extra: {},
+        streamsToShare: { '{f6e8e2cd-0ea4-436e-80e7-5a47e3a38ee1}': [Object] }
+    },
+    name: 'palDurai',
+    sender: '220810'
+    }
+        
+
+video-conference-demo ====== 220810 =>
+    {
+        remoteUserId: '22081',
+        message: {
+            candidate: 'candidate:0 1 UDP 2122252543 2401:4900:4843:ca13:e99d:ee62:3fe9:e9c9 50966 typ host',
+            sdpMid: '0',
+            sdpMLineIndex: 0
+        },
+        name: 'palDurai',
+        sender: '220810'
+    }
+
+video-conference-demo ====== 22081 =>
+    {
+        remoteUserId: '220810',
+        message: {
+            type: 'answer',
+            sdp: 'v=0\r\n' +
+            'o=- 3804323827179938408 2 IN IP4 127.0.0.1\r\n' +
+            's=-\r\n' +
+            't=0 0\r\n' +
+            'a=group:BUNDLE 0 1 2\r\n' +
+            'a=msid-semantic: WMS c64a4dd5-ec3f-4df3-9d4a-730d1d3966f2\r\n' +
+            'm=audio 9 UDP/TLS/RTP/SAVPF 109 9 0 8 101\r\n' +
+            'c=IN IP4 0.0.0.0\r\n' +
+            'a=rtcp:9 IN IP4 0.0.0.0\r\n' +
+            'a=ice-ufrag:TnsX\r\n' +
+            'a=ice-pwd:7lj4j398iuo1rm8oUdQI6zde\r\n' +
+            'a=ice-options:trickle\r\n' +
+            'a=fingerprint:sha-256 69:57:09:60:CE:63:82:E3:98:51:C2:74:74:0B:57:F6:1E:38:66:4B:04:39:DA:43:B3:D5:86:E8:EF:69:06:89\r\n' +
+            'a=setup:active\r\n' +
+            'a=mid:0\r\n' +
+            'a=extmap:1 urn:ietf:params:rtp-hdrext:ssrc-audio-level\r\n' +
+            'a=extmap:3 urn:ietf:params:rtp-hdrext:sdes:mid\r\n' +
+            'a=sendrecv\r\n' +
+            'a=msid:c64a4dd5-ec3f-4df3-9d4a-730d1d3966f2 ddb463b5-9fc7-4147-b17a-0dc5aec0da63\r\n' +
+            'a=rtcp-mux\r\n' +
+            'a=rtpmap:109 opus/48000/2\r\n' +
+            'a=fmtp:109 minptime=10;useinbandfec=1\r\n' +
+            'a=rtpmap:9 G722/8000\r\n' +
+            'a=rtpmap:0 PCMU/8000\r\n' +
+            'a=rtpmap:8 PCMA/8000\r\n' +
+            'a=rtpmap:101 telephone-event/8000\r\n' +
+            'a=ssrc:124666038 cname:Iy9MRzLGhhXrq29x\r\n' +
+            'm=video 9 UDP/TLS/RTP/SAVPF 121 120 124 125 126 127 97 98\r\n' +
+            'c=IN IP4 0.0.0.0\r\n' +
+            'a=rtcp:9 IN IP4 0.0.0.0\r\n' +
+            'a=ice-ufrag:TnsX\r\n' +
+            'a=ice-pwd:7lj4j398iuo1rm8oUdQI6zde\r\n' +
+            'a=ice-options:trickle\r\n' +
+            'a=fingerprint:sha-256 69:57:09:60:CE:63:82:E3:98:51:C2:74:74:0B:57:F6:1E:38:66:4B:04:39:DA:43:B3:D5:86:E8:EF:69:06:89\r\n' +
+            'a=setup:active\r\n' +
+            'a=mid:1\r\n' +
+            'a=extmap:5 urn:ietf:params:rtp-hdrext:toffset\r\n' +
+            'a=extmap:4 http://www.webrtc.org/experiments/rtp-hdrext/abs-send-time\r\n' +
+            'a=extmap:7 http://www.ietf.org/id/draft-holmer-rmcat-transport-wide-cc-extensions-01\r\n' +
+            'a=extmap:6 http://www.webrtc.org/experiments/rtp-hdrext/playout-delay\r\n' +
+            'a=extmap:3 urn:ietf:params:rtp-hdrext:sdes:mid\r\n' +
+            'a=recvonly\r\n' +
+            'a=rtcp-mux\r\n' +
+            'a=rtcp-rsize\r\n' +
+            'a=rtpmap:121 VP9/90000\r\n' +
+            'a=rtcp-fb:121 goog-remb\r\n' +
+            'a=rtcp-fb:121 transport-cc\r\n' +
+            'a=rtcp-fb:121 ccm fir\r\n' +
+            'a=rtcp-fb:121 nack\r\n' +
+            'a=rtcp-fb:121 nack pli\r\n' +
+            'a=fmtp:121 profile-id=0\r\n' +
+            'a=rtpmap:120 VP8/90000\r\n' +
+            'a=rtcp-fb:120 goog-remb\r\n' +
+            'a=rtcp-fb:120 transport-cc\r\n' +
+            'a=rtcp-fb:120 ccm fir\r\n' +
+            'a=rtcp-fb:120 nack\r\n' +
+            'a=rtcp-fb:120 nack pli\r\n' +
+            'a=rtpmap:124 rtx/90000\r\n' +
+            'a=fmtp:124 apt=120\r\n' +
+            'a=rtpmap:125 rtx/90000\r\n' +
+            'a=fmtp:125 apt=121\r\n' +
+            'a=rtpmap:126 H264/90000\r\n' +
+            'a=rtcp-fb:126 goog-remb\r\n' +
+            'a=rtcp-fb:126 transport-cc\r\n' +
+            'a=rtcp-fb:126 ccm fir\r\n' +
+            'a=rtcp-fb:126 nack\r\n' +
+            'a=rtcp-fb:126 nack pli\r\n' +
+            'a=fmtp:126 level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=42e01f\r\n' +
+            'a=rtpmap:127 rtx/90000\r\n' +
+            'a=fmtp:127 apt=126\r\n' +
+            'a=rtpmap:97 H264/90000\r\n' +
+            'a=rtcp-fb:97 goog-remb\r\n' +
+            'a=rtcp-fb:97 transport-cc\r\n' +
+            'a=rtcp-fb:97 ccm fir\r\n' +
+            'a=rtcp-fb:97 nack\r\n' +
+            'a=rtcp-fb:97 nack pli\r\n' +
+            'a=fmtp:97 level-asymmetry-allowed=1;packetization-mode=0;profile-level-id=42e01f\r\n' +
+            'a=rtpmap:98 rtx/90000\r\n' +
+            'a=fmtp:98 apt=97\r\n' +
+            'm=application 9 UDP/DTLS/SCTP webrtc-datachannel\r\n' +
+            'c=IN IP4 0.0.0.0\r\n' +
+            'a=ice-ufrag:TnsX\r\n' +
+            'a=ice-pwd:7lj4j398iuo1rm8oUdQI6zde\r\n' +
+            'a=ice-options:trickle\r\n' +
+            'a=fingerprint:sha-256 69:57:09:60:CE:63:82:E3:98:51:C2:74:74:0B:57:F6:1E:38:66:4B:04:39:DA:43:B3:D5:86:E8:EF:69:06:89\r\n' +
+            'a=setup:active\r\n' +
+            'a=mid:2\r\n' +
+            'a=sctp-port:5000\r\n' +
+            'a=max-message-size:262144\r\n',
+            remotePeerSdpConstraints: false,
+            renegotiatingPeer: false,
+            connectionDescription: {
+            remoteUserId: '220810',
+            message: [Object],
+            sender: '22081',
+            name: 'Metti'
+            },
+            dontGetRemoteStream: false,
+            extra: {},
+            streamsToShare: { 'c64a4dd5-ec3f-4df3-9d4a-730d1d3966f2': [Object] }
+        },
+        name: 'Metti',
+        sender: '22081'
+    }
+
+video-conference-demo ====== 22081 =>
+    {
+        remoteUserId: '220810',
+        message: {
+            candidate: 'candidate:1315509622 1 udp 2122063615 192.168.43.234 51950 typ host generation 0 ufrag TnsX network-id 2 network-cost 10',
+            sdpMid: '0',
+            sdpMLineIndex: 0
+        },
+        name: 'Metti',
+        sender: '22081'
+    }    
+
+video-conference-demo ====== 22081 =>
+    {
+        remoteUserId: '220810',
+        message: {
+            streamid: 'c64a4dd5-ec3f-4df3-9d4a-730d1d3966f2',
+            action: 'mute',
+            streamSyncNeeded: true,
+            type: 'audio'
+        },
+        name: 'Metti',
+        sender: '22081'
+    }
+
+video-conference-demo ====== 220810 =>
+    {
+        remoteUserId: '22081',
+        message: {
+            streamid: '{f6e8e2cd-0ea4-436e-80e7-5a47e3a38ee1}',
+            action: 'mute',
+            streamSyncNeeded: true,
+            type: 'audio'
+        },
+        name: 'palDurai',
+        sender: '220810'
+    }
+    
+    socket.emit('extra-data-updated', <roomid|sessionid>, callback);

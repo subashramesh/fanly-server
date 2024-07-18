@@ -1,0 +1,42 @@
+{
+  "name": "fanly",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "deploy": "gcloud beta run deploy howdy --source . --platform managed --region us-central1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.388.0",
+    "@aws-sdk/lib-storage": "^3.388.0",
+    "@socket.io/redis-adapter": "^7.2.0",
+    "@xmpp/client": "^0.13.1",
+    "@xmpp/debug": "^0.13.0",
+    "apn": "^2.2.0",
+    "axios": "^1.7.1",
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "firebase-admin": "^11.10.1",
+    "formidable": "^3.5.0",
+    "ioredis": "^5.4.1",
+    "jsonwebtoken": "^9.0.0",
+    "kafkajs": "^2.2.4",
+    "knex": "^2.4.2",
+    "mongoose": "^7.4.1",
+    "multer": "^1.4.5-lts.1",
+    "node-xmpp-client": "^3.2.0",
+    "pg": "^8.10.0",
+    "pg-connection-string": "^2.5.0",
+    "postgraphile": "^4.13.0",
+    "postgraphile-plugin-connection-filter": "^2.3.0",
+    "redis": "^4.6.14",
+    "serverless-http": "^3.2.0",
+    "socket.io": "^4.6.1",
+    "uuid": "^9.0.1"
+  }
+}

@@ -1,0 +1,6 @@
+.cache
+.config
+.npm
+.pm2
+.vscode-server
+node_modules
