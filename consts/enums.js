@@ -130,6 +130,43 @@ class ThreadType {
 //     changeGroupTitle,
 //     changeGroupDescription,
 //   }
+class CoinTrasactionType {
+    static likeReceived = 0;
+    static likeGiven = 1;
+    static commentReceived = 2;
+    static commentGiven = 3;
+    static followReceived = 4;
+    static followGiven = 5;
+    static shareReceived = 6;
+    static shareGiven = 7;
+    static postReceived = 8;
+    static postGiven = 9;
+    static storyReceived = 10;
+    static storyGiven = 11;
+    static viewReceived = 12;
+    static viewGiven = 13;
+    static liveReceived = 14;
+    static liveGiven = 15;
+    static giftReceived = 16;
+    static giftGiven = 17;
+    static interestReceived = 18;
+    static interestGiven = 19;
+    static collabReceived = 20;
+    static collabGiven = 21;
+    static reactReceived = 22;
+    static reactGiven = 23;
+    static tagReceived = 24;
+    static tagGiven = 25;
+
+    static coinReceived = 26;
+    static coinGiven = 27;
+    static coinWithdraw = 28;
+    static coinDeposit = 29;
+    static coinTransfer = 30;
+    static coinExchange = 31;
+    static coinPurchase = 32;
+    static coinGift = 33;
+}
 
 class ThreadEventType {
     static numberChange = 0;
@@ -147,6 +184,16 @@ class ThreadEventType {
     static changeWallpaper = 12;
     static callEnd = 13;
 }
+class Achievement {
+    static post = 'POST'
+    static like = 'LIKE'
+    static comment = 'COMMENT'
+    static follower = 'FOLLOWER'
+    static share = 'SHARE'
+    static story = 'STORY'
+    static view = 'VIEW'
+    static reel = 'REEL'
+}
 
 exports.ThreadEventType = ThreadEventType;
 exports.ThreadType = ThreadType;
@@ -154,3 +201,5 @@ exports.NotificationType = NotificationType;
 exports.ReportType = ReportType;
 exports.InteractionType = InteractionType;
 exports.AccountVisibility = AccountVisibility;
+exports.CoinTrasactionType = CoinTrasactionType;
+exports.Achievement = Achievement;

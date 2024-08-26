@@ -3,6 +3,10 @@ const db = require('../service/chat/postgres.js');
 const notification = require('./notification.js');
 const { NotificationType, InteractionType } = require('../consts/enums.js');
 const socket = require('./chat_socket.js')
+const coins = require('../handler/coins.js');
+
+const {Achievement} = require('../consts/enums.js')
+const achieve = require('../handler/achievment.js')
 
 exports.processPosts = processPosts
 async function processPosts(req, posts) {
@@ -440,6 +444,7 @@ exports.viewPost = async (req, res) => {
         });
     }
     try {
+        achieve.addAchievement(Achievement.view, user_id)
         const like = await db.insert('view', {
             owner: user_id,
             post: id
@@ -451,7 +456,11 @@ exports.viewPost = async (req, res) => {
             ]
         })
 
+        
+
         if (post[0].owner != user_id) {
+            achieve.addAchievement(Achievement.view, post[0].owner)
+
             await db.insert('interaction', {
                 owner: user_id,
                 post: id,
@@ -815,23 +824,31 @@ exports.getComments = async (req, res) => {
     const { id } = req.params;
     const user_id = req.user.id;
 
-    if (!id) {
-        return res.send({
-            status: '400',
-            message: 'Bad Request (id is empty)',
-            data: null
+    try{
+        if (!id) {
+            return res.send({
+                status: '400',
+                message: 'Bad Request (id is empty)',
+                data: null
+            });
+        }
+    
+        const comments = await db.fun('get_comment_list', {
+            params: `${user_id},${id}`
         });
+    
+        return res.send({
+            status: '200',
+            message: 'OK',
+            data: comments
+        });
+    } catch(e){
+        console.log(e)
+        return res.send({
+            status: '500',
+            message: `Error ${e}`
+        })
     }
-
-    const comments = await db.fun('get_comment_list', {
-        params: `${user_id},${id}`
-    });
-
-    return res.send({
-        status: '200',
-        message: 'OK',
-        data: comments
-    });
 }
 
 exports.getLikes = async (req, res) => {

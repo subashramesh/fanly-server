@@ -1,8 +1,12 @@
-const { NotificationType } = require('../consts/enums.js');
+const { NotificationType, CoinTrasactionType } = require('../consts/enums.js')
 const messaging = require('../service/firebase/messaging.js')
-const db = require('../service/chat/postgres.js');
-const chat = require('./chat.js');
-const feeds = require('./feeds.js');
+const db = require('../service/chat/postgres.js')
+const chat = require('./chat.js')
+const feeds = require('./feeds.js')
+const coins = require('../handler/coins.js')
+
+const {Achievement} = require('../consts/enums.js')
+const achieve = require('../handler/achievment.js')
 
 async function notify(req, user_id, type, data,) {
     var title = req.user.dname
@@ -33,9 +37,12 @@ async function notify(req, user_id, type, data,) {
         body = `liked your post`
         break;
         case NotificationType.comment:
+        coins.transact(10, CoinTrasactionType.commentReceived, req.user.id, user_id, data.post)
+        coins.transact(5, CoinTrasactionType.commentGiven,user_id ,  req.user.id, data.post)
         body = `commented on your post`    
         break;
         case NotificationType.follow: 
+        achieve.addAchievement(Achievement.follower, user_id)
         body = `started following you`
         break;
         case NotificationType.followRequest: 
@@ -77,6 +84,9 @@ async function notify(req, user_id, type, data,) {
         body = `tagged you in a post`
         break;
         case NotificationType.react:
+        coins.transact(10, CoinTrasactionType.likeReceived, req.user.id, user_id, data.post)
+        coins.transact(5, CoinTrasactionType.likeGiven,user_id ,  req.user.id, data.post)
+        achieve.addAchievement(Achievement.like, user_id)
         body = `reacted to your post`
         break;
     }

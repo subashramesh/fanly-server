@@ -2,5 +2,6 @@
 .config
 .npm
 .pm2
+.gitconfig
 .vscode-server
 node_modules

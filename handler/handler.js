@@ -16,7 +16,8 @@ exports.test = async (req, res) => {
         console.log(e);
         res.status(500).json({
             status: '500',
-            message: 'Internal Server Error'
+            message: 'Internal Server Error',
+            error: e
         });
     }
 }

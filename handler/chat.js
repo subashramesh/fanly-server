@@ -1108,6 +1108,7 @@ exports.updateFCM = async (req, res) => {
 
 exports.updatePushKit = async (req, res) => {
     try {
+        console.log(req.user.id, req.body)
         let result = await db.insert('pushkit', {
             'user': req.user.id,
             'token': req.body.token,

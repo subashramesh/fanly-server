@@ -227,6 +227,9 @@ exports.leave = async function (req, res) {
             })
         }
         let live = lives[0]
+
+        console.log(live, user_id)
+
         if(live.owner === user_id){
             await stop(req, {
                 send: (s) => {},

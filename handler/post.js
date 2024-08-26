@@ -5,6 +5,9 @@ const { notify, revokeNotify } = require('./notification.js');
 const http = require('https');
 const fs = require('fs');
 const session = require('./session.js');
+
+const {Achievement} = require('../consts/enums.js')
+const achieve = require('../handler/achievment.js')
 // const tf = require('@tensorflow/tfjs-node');
 // const mobilenet = require('@tensorflow-models/mobilenet');
 
@@ -114,6 +117,7 @@ exports.createPost = async (req, res) => {
 
     console.log(obj)
     postJob(obj, req, false);
+    achieve.addAchievement(Achievement.post, req.user.id)
     return res.send({
         status: '200',
         message: 'Post created successfully',

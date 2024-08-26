@@ -33,6 +33,9 @@ const search = require('../handler/search.js');
 const verification = require('../handler/verification.js');
 const suggest = require('../handler/suggest.js');
 const eject = require('../handler/eject.js');
+const coins = require('../handler/coins.js');
+const achievement = require('../handler/achievment.js');
+const star = require('../handler/star.js');
 
 router.use('/nn', ayf.router);
 
@@ -52,6 +55,8 @@ router.get('/suggest', auth.validate, suggest.suggest);
 router.get('/verification/status', auth.validate, verification.status);
 router.post('/verification/request', auth.validate, verification.request);
 
+router.get('/achievement', auth.validate, achievement.getAchievements);
+
 router.get('/devices', auth.validate, device.get);
 router.post('/device/:id/remove', auth.validate, device.remove);
 
@@ -63,6 +68,12 @@ router.get('/broadcast', auth.validate, channel.getBroadcasts);
 router.post('/elements', auth.validate, element.elements);
 router.post('/elements/interact', auth.validate, element.interact);
 router.get('/elements/:id/:type', element.get);
+
+router.post('/star/add', star.addStar);
+router.get('/star', star.getStars);
+router.get('/star/:id', star.getStar);
+router.post('/star/banner/add', star.addBanner)
+router.get('/star/banner/get', star.getBanners)
 
 router.post('/live', auth.validate, live.go);
 router.get('/live', auth.validate, live.getLives);
@@ -92,6 +103,10 @@ router.post('/username', auth.validate, chat.getUser);
 router.get('/activity', auth.validate, notification.getActivities);
 router.post('/activity/:id/seen', auth.validate, notification.seenActivity);
 router.post('/notification', auth.validate, notification.notification);
+
+router.get('/coin/balance', auth.validate, coins.getCoinBalance);
+router.get('/coin/history', auth.validate, coins.getCoinHistory);
+router.get('/coin/leaderboard', coins.getRanking);
 
 router.post('/collection', auth.validate, collection.createCollection);
 router.post('/collection/:id/delete', auth.validate, collection.deleteCollection);

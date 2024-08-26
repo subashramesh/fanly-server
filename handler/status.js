@@ -7,6 +7,9 @@ const { notify, revokeNotify } = require('./notification.js');
 const { getConversationId } = require('./manager')
 const { notifyMessage } = require('./chat.js')
 
+const {Achievement} = require('../consts/enums.js')
+const achieve = require('../handler/achievment.js')
+
 exports.createStatus = async (req, res) => {
     let body = req.body
     let payload = {
@@ -67,6 +70,8 @@ exports.createStatus = async (req, res) => {
             message: 'Success',
             data: payload
         })
+
+        achieve.addAchievement(Achievement.story, req.user.id)
 
         socket.emit('status', payload)
     } catch (e) {

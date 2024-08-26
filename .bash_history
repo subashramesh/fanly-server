@@ -20,3 +20,84 @@ git branch -M main
 git remote add origin https://github.com/subashramesh/fanly-server.git
 git push -u origin main
 pm2 list
+git config pull.rebase false
+npm install
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+npm install node:fs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 list
+pm2 start app.js 
+pm2 list
+pm2 logs
+pm2 list
+pm2 start app.js 
+pm2 list
+pm2 logs
+pm2 start app.js 
+pm2 list
+pm2 restart all
+pm2 log
+pm2 restart all
+pm2 log
+pm2 restart all
+pm2 log
+pm2 restart all
+pm2 log
+pm2 restart all
+pm2 log
+pm2 restart all
+pm2 log
+pm2 restart all
+pm2 log
+pm2 restart all
+pm2 log
+pm2 restart all
+pm2 log
+pm2 restart all
+pm2 log
+pm2 restart all
+pm2 log
+pm2 restart all
+pm2 log
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
