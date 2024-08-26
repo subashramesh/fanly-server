@@ -1,0 +1,1000 @@
+pm2 logs
+pm2 restart all
+pm2 logs
+git config --get-all user.name subash1327
+git config --get-all user.email subash1327@icloud.com
+git config --list --show-origin
+git config --global user.name "subash1327"
+git config --global user.email subash1327@icloud.com
+git push -u origin main
+git commit -m "first commit"
+git branch -M main
+git remote add origin https://github.com/subash1327/howdy-server.git
+git push -u origin main
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 list
+pm2 stop
+pm2 stop all
+pm2 start app.js
+pm2 save
+pm2 list
+pm2 logs
+pm2 restart all
+pm2 log
+pm2 restart all
+pm2 log
+pm2 restart all
+pm2 log
+pm2 restart all
+pm2 stop 0
+pm2 stop 1
+pm2 stop 2
+pm2 stop 3
+pm2 restart 4
+pm2 logs
+pm2 restart 4
+pm2 logs
+pm2 restart 4
+pm2 logs
+pm2 restart 4
+pm2 logs
+pm2 list
+pm2 stop 4
+pm2 start 0
+pm2 start 1
+pm2 start 2
+pm2 start 3
+pm2 stop 0
+pm2 stop 1
+pm2 stop 2
+pm2 stop 3
+pm2 stop 4
+pm2 start 4
+pm2 logs
+pm2 list
+pm2re start 4
+pm2 restart 4
+pm2 logs
+pm2 restart 4
+pm2 logs
+pm2 restart 4
+pm2 logs
+pm2 restart 4
+pm2 logs
+pm2 list
+pm2 restart 4
+pm2 logs
+pm2 restart 4
+pm2 logs
+pm2 restart 4
+pm2 logs
+pm2 restart 4
+pm2 logs
+pm2 restart 4
+pm2 logs
+pm2 restart 4
+pm2 logs
+pm2 list
+pm2 logs
+pm2 restart 4
+pm2 logs
+pm2 restart 4
+pwd
+ls
+pm2 list
+pm2 logs
+ls
+history
+pm2 list
+pm2 restart 4
+pm2 logs
+pm2 restart 4
+pm2 logs
+pm2 restart 4
+pm2 logs
+pm2 restart 4
+ls
+pwd
+npm install @livekit/server-sdk
+npm install livekit-server-sdk
+pm2 restart 4
+pm2 logs
+pm2 restart 4
+pm2 logs
+pm2 restart 4
+pm2 logs
+pm2 restart 4
+pm2 logs
+pm2 restart 4
+pm2 logs
+pm2 restart 4
+pm2 logs
+pm2 restart 4
+pm2 logs
+pm2 restart 4
+pm2 logs
+pm2 restart 4
+pm2 logs
+pm2 restart 4
+pm2 logs
+pm2 restart 4
+pm2 logs
+pm2 restart 4
+node -v
+pm2 restart 4
+pm2 logs
+pm2 restart 4
+pm2 logs
+pm2 restart 4
+pm2 logs
+pm2 restart 4
+pm2 logs
+pm2 restart 4
+pm2 logs
+pm2 restart 4
+pm2 logs
+pm2 restart 4
+pm2 logs
+pm2 restart 4
+pm2 logs
+pm2 restart 4
+pm2 logs
+pm2 restart 4
+pm2 logs
+pm2 restart 4
+pm2 logs
+pm2 restart 4
+pm2 logs
+pm2 restart 4
+pm2 logs
+pm2 restart 4
+pm2 logs
+pm2 restart 4
+pm2 logs
+pm2 restart 4
+pm2 logs
+pm2 restart 4
+pm2 logs
+pm2 restart 4
+pm2 logs
+pm2 restart 4
+pm2 logs
+pm2 restart 4
+pm2 logs
+pm2 restart 4
+pm2 logs
+pm2 restart 4
+pm2 logs
+pm2 restart 4
+pm2 logs
+pm2 restart 4
+pm2 logs
+pm2 restart 4
+pm2 logs
+pm2 restart 4
+pwd
+pm2 list
+pm2 logs
+cd logs/pm2logs/
+ls -ltr
+pm2 list
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 list
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 list
+pm2 logs
+pm2 restart all
+pm2 list
+pm2 stop 1
+pm2 stop 2
+pm2 stop 3
+pm2 list
+pm2 restart 0
+pm2 log -e
+pm2 logs -e
+pm2 logs --error
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 list
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 list
+pm2 restart 0
+pm2 list
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+git reset --soft HEAD^ 
+pm2 restart 0
+npm install apn
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+npm install uuid
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 list
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+cat /proc/sys/fs/inotify/max_user_watches
+fs.inotify.max_user_watches=524288
+open /etc/sysctl.conf
+nano /etc/sysctl.conf
+sudo nano /etc/sysctl.conf
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+npm install node-xmpp-client
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+npm install @xmpp/client @xmpp/debug
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 list
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+ls
+npm install
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 restart 0
+pm2 list
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 restart 0
+pm2 logs
+pm2 list
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+npm install axio
+npm install axios
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+git config --global
+git config pull.rebase false
+pm2 restart 2
+pm2 stop 2
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+timedatectl
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+timedatectl
+pm2 restart 0
+timedatectl
+pm2 logs
+timedatectl
+pm2 restart 0
+timedatectl
+pm2 logs
+timedatectl
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 ls
+pm2 logs
+pm2 list
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+ls
+npm install @socket.io/redis-adapter
+ls
+npm install ioredis
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+npm install @socket.io/redis-adapter@^7.2.0
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 list
+pm2 ls
+pm2 delete 1
+pm2 delete 2
+pm2 delete 3
+pm2 logs
+pm2 flush
+pm2 reload all
+pm2 logs
+history
+pm2 list
+pm2 reload all
+pm2 logs
+pm2 reload all
+pm2 logs
+history
+pm2 list
+pm2 delete 0
+pm2 start -i 4 /home/howdychat/app.js  --log-date-format="YYYY-MM-DD HH:mm Z"  --output="/home/howdychat/logs/pm2logs/howdychat.log"  --error="/home/howdychat/logs/pm2logs/howdychat.err"  --name howdychat 
+pm2 list
+pm2 logs
+pm2 ls
+npm install redis
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 list
+pm2 stop 1
+pm2 stop 2
+pm2 stop 3
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+history
+last
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 list
+pm2 stop 1
+pm2 stop 2
+pm2 stop 3
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+pm2 restart 0
+pm2 logs
+redis-server --version
+pm2 restart 0
+pm2 logs
+redis-cli
+pm2 restart 0
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
