@@ -68,6 +68,73 @@ exports.follow = async (req, res) => {
     }
 }
 
+exports.subscribe = async (req, res) => {
+    let user = req.params.id
+    let owner = req.user.id
+    let payload = {
+        user: user,
+        owner: owner
+    }
+    try {
+        let uu = await db.select('account', {
+            fields: ['*'],
+            conditions: [
+                ['id', '=', user]
+            ]
+        })
+        if (uu.length > 0) {
+            let account = uu[0]
+            
+            let result = await db.insert('subscribe', payload, 'id');
+
+            if (result.length > 0) {
+                payload.id = result[0]
+                payload.status = 1
+                
+                res.status(200).send({
+                    message: 'Subscribed',
+                    status: '200',
+                    data: payload})
+            }
+
+        } else {
+            return res.status(404).send({
+                message: 'User not found',
+                status: '404'
+            })
+        }
+    } catch (e) {
+        console.log(e)
+        res.status(500).send({
+            message: `Internal server error ${e}`,
+            status: '500'
+        })
+    }
+}
+
+exports.unsubscribe = async (req, res) => {
+    let user = req.params.id
+    let owner = req.user.id
+    try {
+        let result = await db.delete2('subscribe', {
+            conditions:[
+                ['user', '=', user],
+                ['owner', '=', owner]
+            ]
+        })
+        res.status(200).send({
+            message: 'Unsubscribed',
+            status: '200'
+        })
+    } catch (e) {
+        console.log(e)
+        res.status(500).send({
+            message: `Internal server error ${e}`,
+            status: '500'
+        })
+    }
+}
+
 exports.unfollow = async (req, res) => {
     let user = req.params.id
     let owner = req.user.id

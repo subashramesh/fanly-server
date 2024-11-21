@@ -1088,17 +1088,20 @@ exports.sync = async (req, res) => {
 
 exports.updateFCM = async (req, res) => {
     try {
-        let result = await db.insert('fcm', {
+        let payload = {
             'user': req.user.id,
             'token': req.body.token,
-        }, 'id')
+            'star': req.user.package
+        }
+        console.log(payload)
+        let result = await db.insert('fcm', payload, 'id')
         return res.status(200).json({
             status: '200',
             message: 'Success',
             data: result
         })
     } catch (e) {
-        // console.log(e)
+        console.log(e)
         return res.status(500).json({
             status: '500',
             message: 'Duplicate Unique Key (user, token)'
@@ -1112,6 +1115,7 @@ exports.updatePushKit = async (req, res) => {
         let result = await db.insert('pushkit', {
             'user': req.user.id,
             'token': req.body.token,
+            'star': req.user.package
         }, 'id')
         return res.status(200).json({
             status: '200',
@@ -1276,11 +1280,22 @@ exports.getUser = async (req, res) => {
                 params: `${req.user.id},${id}`
             })
             if(result.length > 0){
-                let post = await db.count('post', {
-                    conditions:[
-                        ['owner', '=', id]
-                    ]
-                })
+                var post;
+
+                if(req.user.star){
+                    post = await db.count('post', {
+                        conditions:[
+                            ['owner', '=', id],
+                            ['star', '=', `${req.user.star}`]
+                        ]
+                    })
+                } else {
+                    post = await db.count('post', {
+                        conditions:[
+                            ['owner', '=', id]
+                        ]
+                    })
+                }
                 let u = result[0]['get_user']
                 u.posts = post[0].count;
                 // console.log(u)
@@ -1305,21 +1320,23 @@ exports.getUser = async (req, res) => {
     }
 
 }
-async function getTokens(user){
+async function getTokens(user, {star = 'default'} = {}){
     let tokens = []
     var result;
     if(Array.isArray(user)){
         result = await db.select('fcm', {
             fields: ['token'],
             conditions: [
-                ['user', 'in', user]
+                ['user', 'in', user],
+                ['star', '=', star]
             ]
         })
     } else {
         result = await db.select('fcm', {
             fields: ['token'],
             conditions: [
-                ['user', '=', user]
+                ['user', '=', user],
+                ['star', '=', star]
             ]
         })
     }
@@ -1337,14 +1354,16 @@ async function getPushKitTokens(user){
         result = await db.select('pushkit', {
             fields: ['token'],
             conditions: [
-                ['user', 'in', user]
+                ['user', 'in', user],
+                // ['star', '=', 'default']
             ]
         })
     } else {
         result = await db.select('pushkit', {
             fields: ['token'],
             conditions: [
-                ['user', '=', user]
+                ['user', '=', user],
+                // ['star', '=', 'default']
             ]
         })
     }

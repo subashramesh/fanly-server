@@ -17,6 +17,7 @@ exports.validate = (req, res, next) => {
         // const key = req.headers['x-api-key'];
         const flavor = req.headers['x-flavour'];
         const star = req.headers['x-star'];
+        const package = req.headers['x-package'];
         // console.log(key)
         // if (flavor != 'dev') {
         //     if (key != process.env.X_API_KEY) {
@@ -35,7 +36,8 @@ exports.validate = (req, res, next) => {
         // }
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         req.user = decoded;
-        req.user.star = star || 1;
+        req.user.star = star;
+        req.user.package = `${package || star}`;
 
         if(flavor === 'howdy'){
             next();

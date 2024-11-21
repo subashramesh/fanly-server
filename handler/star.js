@@ -2,13 +2,14 @@ require('dotenv').config();
 const db = require('../service/chat/postgres')
 
 exports.addStar = async (req, res) => {
-    let { id, name, data, language } = req.body;
+    let { id, name, data, language, df, children} = req.body;
+
 
     try {
         if (id) {
-            let r = await db.update('star', {
+            let r = await db.update('star ', {
                 fields: {
-                    name, data, language
+                    name, data, language, df, children
                 },
                 conditions: [
                     ['id', '=', id]
@@ -51,6 +52,11 @@ exports.getStars = async (req, res) => {
             fields: ['*'],
             conditions: []
         })
+
+        let j = await db.select('main_category', {
+            fields: ['*'],
+            conditions: []
+        })
         // add all stars to language matching languange and id
         l = l.map((v) => {
             v.stars = r.filter((s) => s.language == v.id)
@@ -59,7 +65,30 @@ exports.getStars = async (req, res) => {
         return res.send({
             status: '200',
             message: 'Success',
-            data: l
+            data: l,
+            secondary: j
+        })
+    } catch (e) {
+        console.log(e)
+        return res.send({
+            status: '500',
+            message: 'Internal Server Error'
+        });
+    }
+}
+
+exports.getStarList = async (req, res) => {
+    try {
+        let r = await db.select('star', {
+            fields: ['id', 'name'],
+            conditions: [],
+            orderBy: 'id',
+            order: 'asc'
+        })
+        return res.send({
+            status: '200',
+            message: 'Success',
+            data: r
         })
     } catch (e) {
         console.log(e)

@@ -1,23 +1,20 @@
 exports.message = async (token, data, notification) => {
     try {
-        let tokens = [];
-        if (Array.isArray(token)) {
-            token = token.filter(function (el) {
-                return el != null && el != undefined && el != '';
-            });
-            tokens = token;
-        } else {
-            tokens.push(token);
+        let tokens = Array.isArray(token) ? token.filter(el => el) : [token];
+
+        var android;
+        if (notification) {
+            if (notification.android) {
+                android = notification.android;
+                delete notification.android;
+            }
         }
 
-        
         const payload = {
             data: data,
+            ...(notification && { notification: notification }),
         };
-        if (notification !== undefined && notification !== null) {
-            payload.notification = notification;
-        }
-        console.log(data.collapseKey || 'None')
+
         const options = {
             priority: "high",
             timeToLive: 60 * 60 * 24,
@@ -25,36 +22,30 @@ exports.message = async (token, data, notification) => {
             mutableContent: true,
             collapseKey: data.collapseKey || 'None',
         };
-        let result = await wAdmin.messaging().sendToDevice(token, payload, options);
-        // let result = await wAdmin.messaging().sendEachForMulticast(
-        //     {
-        //         tokens: tokens,
-        //         notification: notification,
-        //         android: {
-        //             priority: 'high',
-        //             collapseKey: data.collapseKey || 'None',
-        //             data: data,
-        //             ttl: 60 * 60 * 24 * 1000,                           
-        //             restrictedPackageName: 'com.timesmed.wego',
-        //         },
-        //         data: data,
-        //         apns: {
-        //             payload: {
-        //                 aps: {
-        //                     contentAvailable: true,
-        //                     mutableContent: true,
-        //                     threadId: data.collapseKey || 'None',
-        //                     category: data.collapseKey || 'None'
-        //                 },
-                        
-        //             }
-        //         }
-        //     }
-        // );
-        console.log(result);
+
+        const message = {
+            tokens: tokens,
+            ...payload,
+        };
+
+        if (android) {
+            message.android = android
+        }
+
+        console.log('message', message)
+        console.log('options', options)
+
+        const result = await wAdmin.messaging().sendEachForMulticast({ ...message, ...options });
+
+        result.responses.forEach((res, i) => {
+            if (res.error) {
+                console.log(`Failure sending notification to token at index ${i}: `, res.error);
+            }
+        });
+
         return result;
     } catch (e) {
-        console.log(e)
+        console.log(e);
         return false;
     }
-}
+};

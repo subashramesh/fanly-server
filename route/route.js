@@ -36,6 +36,7 @@ const eject = require('../handler/eject.js');
 const coins = require('../handler/coins.js');
 const achievement = require('../handler/achievment.js');
 const star = require('../handler/star.js');
+const places = require('../handler/places.js');
 
 router.use('/nn', ayf.router);
 
@@ -58,6 +59,7 @@ router.post('/verification/request', auth.validate, verification.request);
 router.get('/achievement', auth.validate, achievement.getAchievements);
 
 router.get('/devices', auth.validate, device.get);
+router.get('/me', auth.validate, authenticate.me);
 router.post('/device/:id/remove', auth.validate, device.remove);
 
 router.post('/broadcast', auth.validate, channel.newBroadcast);
@@ -71,8 +73,13 @@ router.get('/elements/:id/:type', element.get);
 
 router.post('/star/add', star.addStar);
 router.get('/star', star.getStars);
+router.get('/star/list', star.getStarList);
 router.get('/star/:id', star.getStar);
 router.post('/star/banner/add', star.addBanner)
+
+router.post('/star/admin/add', authenticate.makeAdmin)
+router.post('/star/admin/remove', authenticate.removeAdmin)
+
 router.get('/star/banner/get', star.getBanners)
 
 router.post('/live', auth.validate, live.go);
@@ -104,9 +111,13 @@ router.get('/activity', auth.validate, notification.getActivities);
 router.post('/activity/:id/seen', auth.validate, notification.seenActivity);
 router.post('/notification', auth.validate, notification.notification);
 
+router.post('/places/add', auth.validate, places.addPlace);
+router.get('/places', auth.validate, places.getPlaces);
+router.get('/places/:id', auth.validate, places.getPlace);
+
 router.get('/coin/balance', auth.validate, coins.getCoinBalance);
 router.get('/coin/history', auth.validate, coins.getCoinHistory);
-router.get('/coin/leaderboard', coins.getRanking);
+router.get('/coin/leaderboard',auth.validate, coins.getRanking);
 
 router.post('/collection', auth.validate, collection.createCollection);
 router.post('/collection/:id/delete', auth.validate, collection.deleteCollection);
@@ -118,6 +129,7 @@ router.post('/channel', auth.validate, channel.createChannel);
 router.post('/channel/:id/update', auth.validate, channel.updateChannel);
 router.get('/channels', auth.validate, channel.getChannels);
 router.get('/channels/my', auth.validate, channel.getMyChannels);
+router.get('/channels/map', auth.validate, channel.getChannelsMap);
 router.get('/channels/following', auth.validate, channel.getFollowedChannels);
 router.post('/channel/:id/follow', auth.validate, channel.followChannel);
 router.post('/channel/:id/unfollow', auth.validate, channel.unfollowChannel);
@@ -135,6 +147,10 @@ router.get('/search/:type', auth.validate, search.search);
 
 router.post('/user/:id/follow', auth.validate, follow.follow);
 router.post('/user/:id/unfollow', auth.validate, follow.unfollow);
+
+router.post('/user/:id/subscribe', auth.validate, follow.subscribe);
+router.post('/user/:id/unsubscribe', auth.validate, follow.unsubscribe);
+
 router.get('/user/:id/followers', auth.validate, follow.followers);
 router.get('/user/:id/followings', auth.validate, follow.followings);
 router.get('/user/:id/mutuals', auth.validate, follow.mutuals);
@@ -148,6 +164,7 @@ router.post('/user/:id/message/reject', auth.validate, follow.rejectMessageReque
 
 
 router.get('/user/:id/posts', auth.validate, feeds.userPosts);
+router.get('/user/:id/posts/members', auth.validate, feeds.userMembersPosts);
 router.get('/user/:id/posts/tagged', auth.validate, feeds.userTaggedPosts);
 router.get('/user/:id/reels', auth.validate, feeds.userReels);
 router.post('/user/:id/block', auth.validate, feeds.block);
@@ -184,6 +201,7 @@ router.get('/post/:id/likes', auth.validate, feeds.getLikes);
 router.get('/post/:id/reactions', auth.validate, feeds.getReactions);
 router.get('/post/:id/interests', auth.validate, feeds.getInterests);
 router.get('/post/:id/comments', auth.validate, feeds.getComments);
+router.get('/post/:id/comments/stars', auth.validate, feeds.getStarComments);
 router.post('/post/:id/delete', auth.validate, feeds.deletePost);
 router.post('/post/:id/g/:s', auth.validate, post.state);
 

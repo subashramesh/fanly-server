@@ -108,11 +108,19 @@ exports.sync = async (req, res) => {
         let r = []
         for(let i = 0; i < result.length; i++){
             let item = result[i];
+            console.log(item)
+            if(item.data){
+                item.data = {
+                    avatar: item.data.avatar,
+                }
+            }
             let index = phones.indexOf(item.normalized) > -1 ? phones.indexOf(item.normalized) : phones.indexOf(item.phone);
             let d = data[index];
             d.user = item;
             r.push(d);
         }
+
+        console.log(r)
         return res.send({
             status: '200',
             message: 'Success',

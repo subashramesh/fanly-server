@@ -63,55 +63,92 @@ exports.feeds = async (req, res) => {
         const offset = req.query.offset || 0;
         switch (type) {
             case 'following':
-                let con = await db.select('contact', {
-                    fields: ['*'],
-                    conditions: [
-                        ['user', '=', req.user.id]
-                    ]
-                })
-                let phones = con.map((item) => item.phone)
+                // let con = await db.select('contact', {
+                //     fields: ['*'],
+                //     conditions: [
+                //         ['user', '=', req.user.id]
+                //     ]
+                // })
+                // let phones = con.map((item) => item.phone)
                 
-                let acc = await db.select('account', {
-                    fields: ['*'],
-                    conditions: [
-                        ['normalized', 'in', phones]
-                    ]
-                })
-                let followings = await db.select('follow', {
-                    fields: ['*'],
-                    conditions: [
-                        ['owner', '=', req.user.id]
-                    ]
-                })
-                var idList = [];
-                idList.push(req.user.id);
-                var ids = '';
-                acc.forEach(e => {
-                    idList.push(e.id)
-                })
-                followings.forEach(e => {
-                    idList.push(e.user)
-                })
-                // remove duplicates
-                idList = [...new Set(idList)];
-                idList.forEach(e => {
-                    ids += `${e},`
-                })
-                ids = ids.substring(0, ids.length - 1);
-                const following = await db.fun('get_feeds', {
-                    params: `${id},${limit},${offset},'{${ids}}'::bigint[]`
-                });
-                let data = await processPosts(req, following);
+                // let acc = await db.select('account', {
+                //     fields: ['*'],
+                //     conditions: [
+                //         ['normalized', 'in', phones]
+                //     ]
+                // })
+                // let followings = await db.select('follow', {
+                //     fields: ['*'],
+                //     conditions: [
+                //         ['owner', '=', req.user.id]
+                //     ]
+                // })
+                // var idList = [];
+                // idList.push(req.user.id);
+                // var ids = '';
+                // acc.forEach(e => {
+                //     idList.push(e.id)
+                // })
+                // followings.forEach(e => {
+                //     idList.push(e.user)
+                // })
+                // // remove duplicates
+                // idList = [...new Set(idList)];
+                // idList.forEach(e => {
+                //     ids += `${e},`
+                // })
+                // ids = ids.substring(0, ids.length - 1);
+                // var following
+
+                // if(req.user.star){
+                //     console.log('star: ', req.user.star)
+                //     following = await db.fun('get_feeds_by_star', {
+                //         params: `${id},${limit},${offset},'{${ids}}'::bigint[],${req.user.star}`
+                //     });
+                // } else {
+                //     following = await db.fun('get_feeds', {
+                //         params: `${id},${limit},${offset},'{${ids}}'::bigint[]`
+                //     });
+                // }
+
+                // //get_feeds_by_star
+                // let data = await processPosts(req, following);
     
-                return res.send({
-                    status: '200',
-                    message: 'OK',
-                    data: data
-                });
+                // return res.send({
+                //     status: '200',
+                //     message: 'OK',
+                //     data: data
+                // });
             case 'public':
-                const popular = await db.fun('get_public_posts', {
-                    params: `${id},${limit},${offset}`
-                });
+                var popular
+                if(req.user.star){
+                    let ss = await db.select('star', {
+                        fields: ['children'],
+                        conditions: [
+                            ['id', '=', req.user.star]
+                        ]
+                    })
+                    let children = ss[0].children;
+                    if(children){
+                        children.push(req.user.star)
+                        var sss = '';
+                        children.forEach(e => {
+                            sss += `${e},`
+                        })
+                        sss = sss.substring(0, sss.length - 1);
+                        popular = await db.fun('get_public_posts_by_stars', {
+                            params: `${id},${limit},${offset},'{${sss}}'::bigint[]`
+                        });
+                    } else {
+                        popular = await db.fun('get_public_posts_by_star', {
+                            params: `${id},${limit},${offset},${req.user.star}`
+                        });
+                    }
+                } else {
+                    popular = await db.fun('get_public_posts', {
+                        params: `${id},${limit},${offset}`
+                    });
+                }
                 let data2 = await processPosts(req, popular);
     
                 return res.send({
@@ -120,9 +157,16 @@ exports.feeds = async (req, res) => {
                     data: data2
                 });
             case 'explore':
-                const explore = await db.fun('get_public_posts', {
-                    params: `${id},${limit},${offset}`
-                });
+                var explore
+                if(req.user.star){
+                    explore = await db.fun('get_public_posts_by_star', {
+                        params: `${id},${limit},${offset},${req.user.star}`
+                    });
+                } else {
+                    explore = await db.fun('get_public_posts', {
+                        params: `${id},${limit},${offset}`
+                    });
+                }
                 let data3 = await processPosts(req, explore);
     
                 return res.send({
@@ -592,9 +636,57 @@ exports.userPosts = async (req, res) => {
     const { id } = req.params;
 
     if (id) {
-        let data = await db.fun('get_user_post_list', {
-            params: `${req.user.id}, ${id}`
-        });
+        var data
+    
+        if(req.user.star){
+            data = await db.fun('get_user_post_list_by_star', {
+                params: `${req.user.id}, ${id}, ${req.user.star}`
+            });
+        } else {
+            data = await db.fun('get_user_post_list', {
+                params: `${req.user.id}, ${id}`
+            });
+        }
+
+        if (data) {
+            let data2 = await processPosts(req, data);
+            return res.send({
+                status: '200',
+                message: 'OK',
+                data: data2
+            })
+        } else {
+            return res.send({
+                status: '404',
+                message: 'User not found',
+                data: null
+            })
+        }
+    } else {
+        return res.send({
+            status: '400',
+            message: 'Bad Request (id is empty)',
+            data: null
+        })
+    }
+}
+
+
+exports.userMembersPosts = async (req, res) => {
+    const { id } = req.params;
+
+    if (id) {
+        var data
+    
+        if(req.user.star){
+            data = await db.fun('get_user_member_post_list_by_star', {
+                params: `${req.user.id}, ${id}, ${req.user.star}`
+            });
+        } else {
+            data = await db.fun('get_user_post_list', {
+                params: `${req.user.id}, ${id}`
+            });
+        }
 
         if (data) {
             let data2 = await processPosts(req, data);
@@ -834,6 +926,37 @@ exports.getComments = async (req, res) => {
         }
     
         const comments = await db.fun('get_comment_list', {
+            params: `${user_id},${id}`
+        });
+    
+        return res.send({
+            status: '200',
+            message: 'OK',
+            data: comments
+        });
+    } catch(e){
+        console.log(e)
+        return res.send({
+            status: '500',
+            message: `Error ${e}`
+        })
+    }
+}
+
+exports.getStarComments = async (req, res) => {
+    const { id } = req.params;
+    const user_id = req.user.id;
+
+    try{
+        if (!id) {
+            return res.send({
+                status: '400',
+                message: 'Bad Request (id is empty)',
+                data: null
+            });
+        }
+    
+        const comments = await db.fun('get_star_comment_list', {
             params: `${user_id},${id}`
         });
     

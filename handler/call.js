@@ -33,6 +33,8 @@ exports.call = async (req, res) => {
         group: body.group,
     };
 
+    console.log('call', call)
+
     await callRooms.setUserBusy(req.user.id)
 
     try {
@@ -92,7 +94,7 @@ exports.call = async (req, res) => {
                 }
             }
 
-            if (tokens.length > 0) {
+            if (tokens.length > 0 || true) {
                 let payload = {
                     type: 'call',
                     data: JSON.stringify(call),
@@ -119,8 +121,11 @@ exports.call = async (req, res) => {
                             messaging.message(tt, payload, {
                                 title: `${name}`,
                                 body: `Incoming call from ${gg.name}`,
-                                sound: 'call.aiff',
-                                android_channel_id: 'channelId100',
+                                android: {
+                                    notification: {
+                                        channelId: 'channelId100',
+                                    }
+                                }
                             })
                         }
                     }
@@ -147,6 +152,7 @@ exports.call = async (req, res) => {
 
                     console.log(`Call receivers: ${receivers}`)
                     let pushkit = await chat.getPushKitTokens(receivers)
+                    console.log('pushkit', pushkit)
 
                     var account;
 
@@ -188,7 +194,11 @@ exports.call = async (req, res) => {
                     messaging.message(tokens, payload, {
                         title: '',
                         body: '',
-                        android_channel_id: 'channelId100',
+                        android: {
+                            notification: {
+                                channelId: 'channelId100',
+                            }
+                        }
                     })
 
                 }
@@ -313,6 +323,8 @@ exports.invite = async (req, res) => {
 
         let pushkit = await chat.getPushKitTokens(user);
         var account;
+
+        console.log('pushkit', pushkit)
 
         let aa = await db.select('account', {
             fields: ['*'],

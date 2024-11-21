@@ -1,14 +1,15 @@
 const db = require('../service/chat/postgres')
 const { CoinTrasactionType } = require('../consts/enums.js')
 
-async function transact(value, type, user, owner, post) {
+async function transact(value, type, user, owner, post, star) {
     if (value != null) {
         let r = await db.insert('coin_transaction', {
             owner: owner,
             value: value,
             type: type,
             user: user,
-            post: post
+            post: post,
+            star: star
         }, 'id')
         console.log(r)
         return r;
@@ -19,7 +20,8 @@ exports.getCoinBalance = async (req, res) => {
     try {
         let result = await db.select('coin_transaction', {
             conditions: [
-                ['owner', '=', req.user.id]
+                ['owner', '=', req.user.id],
+                ['star' , '=', req.user.star]
             ],
             fields: ['*'],
         })
@@ -48,7 +50,8 @@ exports.getCoinHistory = async (req, res) => {
     try {
         let result = await db.select('coin_transaction', {
             conditions: [
-                ['owner', '=', req.user.id]
+                ['owner', '=', req.user.id],
+                ['star' , '=', req.user.star]
             ],
             fields: ['*'],
             orderBy: 'created_at',
@@ -69,100 +72,61 @@ exports.getCoinHistory = async (req, res) => {
     }
 }
 
-exports.getRanking = async (req, res) => {
-    var result;
+exports.getRanking = async (req, res) => {  
     const { num } = req.query;
-    var number = num;
-    console.log(number);
-    const query = `SELECT 
-      a.*,
-      ct.total_value
-  FROM 
-      (SELECT 
-           owner, 
-           SUM(value) AS total_value
-       FROM 
-           coin_transaction
-       WHERE 
-           created_at >= CURRENT_DATE 
-           AND created_at < CURRENT_DATE + INTERVAL '1 day'
-       GROUP BY 
-           owner
-       ORDER BY 
-           total_value DESC
-       LIMIT 15) ct
-  JOIN 
-      account a ON ct.owner = a.id
-  ORDER BY 
-      ct.total_value DESC;
-  `;
+    const number = parseInt(num, 10);
+    let star = req.user.star;
 
-    const query1 = `SELECT 
-      a.*,
-      ct.total_value
-  FROM 
-      (SELECT 
-           owner, 
-           SUM(value) AS total_value
-       FROM 
-           coin_transaction
-       WHERE 
-           created_at >= date_trunc('week', CURRENT_DATE)  -- Start of the current week
-           AND created_at < date_trunc('week', CURRENT_DATE) + INTERVAL '1 week'  -- Start of next week
-       GROUP BY 
-           owner
-       ORDER BY 
-           total_value DESC
-       LIMIT 15) ct
-  JOIN 
-      account a ON ct.owner = a.id
-  ORDER BY 
-      ct.total_value DESC;
-  `;
+    let interval = '';
+    let startDateCondition = '';
 
-    const query2 = `SELECT 
-      a.*,
-      ct.total_value
-  FROM 
-      (SELECT 
-           owner, 
-           SUM(value) AS total_value
-       FROM 
-           coin_transaction
-       WHERE 
-           created_at >= date_trunc('month', CURRENT_DATE)  -- Start of the current month
-           AND created_at < date_trunc('month', CURRENT_DATE) + INTERVAL '1 month'  -- Start of next month
-       GROUP BY 
-           owner
-       ORDER BY 
-           total_value DESC
-       LIMIT 15) ct
-  JOIN 
-      account a ON ct.owner = a.id
-  ORDER BY 
-      ct.total_value DESC;
-  `
-
-    if (number == 0) {
-        result = await db.knex.raw(query);
-    } else if (number == 1) {
-        result = await db.knex.raw(query1);
-    } else if (number == 2) {
-        result = await db.knex.raw(query2);
+    if (number === 0) {
+        interval = '1 day';
+        startDateCondition = `created_at >= CURRENT_DATE AND created_at < CURRENT_DATE + INTERVAL '${interval}'`;
+    } else if (number === 1) {
+        interval = '1 week';
+        startDateCondition = `created_at >= date_trunc('week', CURRENT_DATE) AND created_at < date_trunc('week', CURRENT_DATE) + INTERVAL '${interval}'`;
+    } else if (number === 2) {
+        interval = '1 month';
+        startDateCondition = `created_at >= date_trunc('month', CURRENT_DATE) AND created_at < date_trunc('month', CURRENT_DATE) + INTERVAL '${interval}'`;
     } else {
-        return res.json({
-            'message': 'invalid Number'
-        })
+        return res.json({ message: 'Invalid number' });
     }
 
-    if (result.rowCount <= 0) {
-        return res.json({
-            'message': 'No data found'
-        })
-    } else {
+    const query = `
+        SELECT 
+            a.*,
+            ct.total_value
+        FROM 
+            (SELECT 
+                 owner, 
+                 SUM(value) AS total_value
+             FROM 
+                 coin_transaction
+             WHERE 
+                 ${startDateCondition}
+                 AND star = ${star}
+             GROUP BY 
+                 owner
+             ORDER BY 
+                 total_value DESC
+             LIMIT 15) ct
+        JOIN 
+            account a ON ct.owner = a.id
+        ORDER BY 
+            ct.total_value DESC;
+    `;
+
+    try {
+        const result = await db.knex.raw(query);
+        if (result.rowCount <= 0) {
+            return res.json({ message: 'No data found' });
+        }
         return res.json(result.rows);
-
+    } catch (error) {
+        console.error("Database error:", error);
+        return res.status(500).json({ message: 'Internal server error' });
     }
-}
+};
 
 exports.transact = transact

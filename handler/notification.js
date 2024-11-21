@@ -37,8 +37,8 @@ async function notify(req, user_id, type, data,) {
         body = `liked your post`
         break;
         case NotificationType.comment:
-        coins.transact(10, CoinTrasactionType.commentReceived, req.user.id, user_id, data.post)
-        coins.transact(5, CoinTrasactionType.commentGiven,user_id ,  req.user.id, data.post)
+        coins.transact(10, CoinTrasactionType.commentReceived, req.user.id, user_id, data.post, req.user.star)
+        coins.transact(5, CoinTrasactionType.commentGiven,user_id ,  req.user.id, data.post, req.user.star)
         body = `commented on your post`    
         break;
         case NotificationType.follow: 
@@ -84,14 +84,15 @@ async function notify(req, user_id, type, data,) {
         body = `tagged you in a post`
         break;
         case NotificationType.react:
-        coins.transact(10, CoinTrasactionType.likeReceived, req.user.id, user_id, data.post)
-        coins.transact(5, CoinTrasactionType.likeGiven,user_id ,  req.user.id, data.post)
+        coins.transact(10, CoinTrasactionType.likeReceived, req.user.id, user_id, data.post, req.user.star)
+        coins.transact(5, CoinTrasactionType.likeGiven,user_id ,  req.user.id, data.post, req.user.star)
         achieve.addAchievement(Achievement.like, user_id)
         body = `reacted to your post`
         break;
     }
     data.type = type;
     data.owner = user_id;
+    data.star = req.user.star;
     console.log(`sending notification to ${user_id} ${title} ${body} ${JSON.stringify(data)}`)
     let res = await db.insert('activity', data, 'id');
     console.log(res)
@@ -165,9 +166,17 @@ exports.revokeNotify = revokeNotify;
 exports.getActivities = async (req, res) => {
     const  user_id  = req.user.id;
 
-    let activities = await db.fun('get_activity', {
-        params: `${user_id}`
-    })
+    var activities;
+    if(req.user.star){
+        activities =  await db.fun('get_activity_by_star', {
+            params: `${user_id}, ${req.user.star}`
+        })
+    } else {
+        activities =  await db.fun('get_activity', {
+            params: `${user_id}`
+        })
+    }
+    //get_activity_by_star
     var posts = {};
     for(let i = 0; i < activities.length; i++){
         let e = activities[i];

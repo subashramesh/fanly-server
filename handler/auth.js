@@ -49,15 +49,21 @@ exports.sendOTP = async (req, res) => {
 }
 
 exports.passwordAuth = async (req, res) => {
-    let {phone, code, pass} = req.body;
+    let {phone, code, pass, mail} = req.body;
     
     try {
+        var conditions = [
+            ['phone', '=', phone],
+            ['code', '=', code],
+        ];
+        if(mail){
+            conditions = [
+                ['mail', '=', mail]
+            ]
+        }
         let r = await db.select('account', {
             fields: ['*'],
-            conditions: [
-                ['phone', '=', phone],
-                ['code', '=', code],
-            ]
+            conditions: conditions
         })
 
         if(r.length === 0){
@@ -116,6 +122,7 @@ exports.passwordAuth = async (req, res) => {
 
 exports.phoneAuth = async (req, res) => {
     let phone = req.body.phone;
+    let mail = req.body.mail;
     let code = req.body.code;
     let otp = req.body.otp;
     let pass = req.body.pass;
@@ -168,14 +175,20 @@ exports.phoneAuth = async (req, res) => {
     } catch (e) {}
 
     try {
-        console.log(phone, code, otp)
-        let result = await db.select('account', {
+        console.log(phone, code, otp, mail)
+        let m = {
             fields: ['*'],
             conditions:[
                 ['phone', '=', phone],
                 ['code', '=', code],
             ]
-        });
+        }
+        if(mail){
+            m.conditions = [
+                ['mail', '=', mail]
+            ]
+        }
+        let result = await db.select('account', m);
 
         if(result.length > 0){
             if(pass){
@@ -247,6 +260,7 @@ exports.phoneAuth = async (req, res) => {
             let account = {
                 phone: phone,
                 code: code,
+                mail: mail,
                 cipher: pass,
                 normalized: `${code}${phone}`,
                 created_at: new Date()
@@ -521,6 +535,45 @@ exports.checkName = async (req, res) => {
     }
 }
 
+exports.me = async (req, res) => {
+    try {
+        let accounts = await db.select('account', {
+            fields: ['*'],
+            conditions: [
+                ['id', '=', req.user.id]
+            ]
+        })
+    
+        if(accounts.length > 0){
+            let account = accounts[0];
+            let devices = await db.select('device', {
+                fields: ['*'],
+                conditions: [
+                    ['owner', '=', account.id]
+                ]
+            });
+            return res.status(200).json({
+                status: '200',
+                message: 'Success',
+                data: {
+                    user: account,
+                }
+            });
+        } else {
+            return res.status(404).json({
+                status: '404',
+                message: 'Not Found'
+            });
+        }
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            status: '500',
+            message: `Internal Server Error ${error}`
+        });
+    }
+}
+
 exports.updateProfile = async (req, res) => {
     let payload = {
         dname: req.body.dname,
@@ -733,6 +786,108 @@ exports.deleteAccount = async (req, res) => {
             status: '200',
             message: 'Success',
             data: null
+        })
+    } catch (e) {
+        console.log(e)
+        res.status(500).json({
+            status: '500',
+            message: 'Internal Server Error'
+        })
+    }
+}
+
+exports.createChild = async (req, res) => {
+    let body = req.body
+    let user = req.user
+    let payload = {
+        dname: body.dname,
+        parent: user.id,
+        avatar: body.avatar,
+        uname: body.uname,
+        dob: body.dob,
+        data: body.data
+    }
+
+    try {
+        let result = await db.insert('account', payload, 'id')
+        payload.id = result[0].id
+        return res.send({
+            status: '200',
+            message: 'Success',
+            data: payload
+        })
+    } catch (e) {
+        console.log(e)
+        res.status(500).json({
+            status: '500',
+            message: 'Internal Server Error'
+        })
+    }
+}
+
+exports.getChild = async (req, res) => {
+    let user = req.user
+    try {
+        let result = await db.select('account', {
+            conditions: [
+                ['parent', '=', user.id]
+            ],
+            fields: ['*']
+        })
+        return res.send({
+            status: '200',
+            message: 'Success',
+            data: result
+        })
+    } catch (e) {
+        console.log(e)
+        res.status(500).json({
+            status: '500',
+            message: 'Internal Server Error'
+        })
+    }
+}
+
+exports.makeAdmin = async (req, res) => {
+    let {user, star} = req.body;
+
+    try {
+        let r = await db.update('account', {
+            fields: {
+                star: star
+            },
+            conditions: [
+                ['id', '=', user]
+            ]
+        })
+        return res.send({
+            status: '200',
+            message: 'Success',
+        })
+    } catch (e) {
+        console.log(e)
+        res.status(500).json({
+            status: '500',
+            message: 'Internal Server Error'
+        })
+    }
+}
+
+exports.removeAdmin = async (req, res) => {
+    let {user} = req.body;
+
+    try {
+        let r = await db.update('account', {
+            fields: {
+                star: null
+            },
+            conditions: [
+                ['id', '=', user]
+            ]
+        })
+        return res.send({
+            status: '200',
+            message: 'Success'
         })
     } catch (e) {
         console.log(e)

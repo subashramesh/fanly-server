@@ -101,3 +101,111 @@ pm2 restart all
 pm2 logs
 pm2 restart all
 pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+sudo su
+ls
+pwd
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+sudo ufw allow 27017
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all

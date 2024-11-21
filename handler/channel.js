@@ -9,7 +9,9 @@ exports.createChannel = async (req, res) => {
         name: body.name,
         data: body.data,
         owner: req.user.id,
-        updated_at: new Date()
+        updated_at: new Date(),
+        star: req.user.star,
+        place: body.place
     };
 
     try {
@@ -80,7 +82,8 @@ exports.updateChannel = async (req, res) => {
     let channel = {
         name: body.name,
         data: body.data,
-        updated_at: new Date()
+        updated_at: new Date(),
+        place: body.place
     };
 
     try {
@@ -215,11 +218,17 @@ async function processChannels(channels){
     return channels;
 }
 
-exports.getChannels = async (req, res) => {
+exports.getChannelsMap = async (req, res) => {
     try {
+        let cons = []
+
+        if(req.user.star){
+            cons.push(['star', '=', req.user.star])
+        }
+
         let channels = await db.select('channel', {
             fields: ['*'],
-            conditions: []
+            conditions: cons
         });
 
         let ids = channels.map((e) => e.id)
@@ -239,7 +248,67 @@ exports.getChannels = async (req, res) => {
             }
         }
         let data = await processChannels(channels);
-        return res.status(200).json({
+
+        let places = await db.select('places', {
+            fields: ['*'],
+            conditions: []
+        })
+
+        for(let i = 0; i < places.length; i++){
+            places[i].channels = [];
+            for(let j = 0; j < data.length; j++){
+                if(`${places[i].id}` === `${data[j].place}`){
+                    places[i].channels.push(data[j]);
+                }
+            }
+        }
+
+        return res.send({
+            status: '200',
+            message: 'Success',
+            data: places
+        })
+
+    } catch (e){
+        console.log(e)
+        return res.status(500).send({
+            status: '500',
+            message: 'Internal Server Error'
+        })
+    }
+}
+
+exports.getChannels = async (req, res) => {
+    try {
+        let cons = []
+
+        if(req.user.star){
+            cons.push(['star', '=', req.user.star])
+        }
+
+        let channels = await db.select('channel', {
+            fields: ['*'],
+            conditions: cons
+        });
+
+        let ids = channels.map((e) => e.id)
+        let members = await db.select('channel_member', {
+            fields: ['*'],
+            conditions: [
+                ['channel', 'in', ids],
+                ['user', '=', req.user.id]
+            ]
+        });
+        for(let i = 0; i < channels.length; i++){
+            for(let j = 0; j < members.length; j++){
+                if(channels[i].id == members[j].channel){
+                    channels[i].follow = true;
+                }
+                
+            }
+        }
+        let data = await processChannels(channels);
+        return res.send({
             status: '200',
             message: 'Success',
             data: data
@@ -255,11 +324,17 @@ exports.getChannels = async (req, res) => {
 
 exports.getMyChannels = async (req, res) => {
     try {
+        let cons = [
+            ['owner', '=', req.user.id]
+        ]
+
+        if(req.user.star){
+            cons.push(['star', '=', req.user.star])
+        }
+
         let channels = await db.select('channel', {
             fields: ['*'],
-            conditions: [
-                ['owner', '=', req.user.id]
-            ]
+            conditions: cons
         });
 
         let ids = channels.map((e) => e.id)

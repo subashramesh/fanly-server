@@ -20,7 +20,7 @@ const achieve = require('../handler/achievment.js')
 //   postArch.compile({ optimizer: 'adam', loss: 'binaryCrossentropy' });
 
 exports.createPost = async (req, res) => {
-    const { media, metadata, location, privacies, type, variant, collabs, tags, state, visibility, categories} = req.body;
+    const { media, metadata, location, privacies, type, variant, collabs, tags, state, visibility, categories, members} = req.body;
     const user_id = req.user.id;
 
 
@@ -58,7 +58,9 @@ exports.createPost = async (req, res) => {
         'variant': variant || 0,
         'state': state || 0,
         'visibility': visibility || 0,
-        'categories': categories || []
+        'categories': categories || [],
+        'star': req.user.star,
+        'members': members || false
     }
 
     if(collabs){
@@ -112,7 +114,8 @@ exports.createPost = async (req, res) => {
         variant: payload.variant,
         state: payload.state,
         user: req.user,
-        visibility: payload.visibility
+        visibility: payload.visibility,
+        members: members
     };
 
     console.log(obj)
@@ -128,7 +131,7 @@ exports.createPost = async (req, res) => {
 
 exports.updatePost = async (req, res) => {
     const post_id = req.params.id;
-    const { media, metadata, location, privacies, type, variant, collabs, tags, state, visibility, categories} = req.body;
+    const { media, metadata, location, privacies, type, variant, collabs, tags, state, visibility, categories, members} = req.body;
     const user_id = req.user.id;
 
     let pp = await db.select('post', {
@@ -172,7 +175,8 @@ exports.updatePost = async (req, res) => {
         'variant': variant || 0,
         'state': state || 0,
         'visibility': visibility || 0,
-        'categories': categories || []
+        'categories': categories || [],
+        'members': members || false
     }
 
     var toAdd = [];

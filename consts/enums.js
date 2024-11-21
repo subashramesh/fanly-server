@@ -195,6 +195,25 @@ class Achievement {
     static reel = 'REEL'
 }
 
+class MeritScoreType {
+    static rightModeration = 0;
+    static falseModeration = 1;
+    static rightReport = 2;
+    static falseReport = 3;
+}
+
+class ModeratorRole {
+    static admin = 0;
+    static moderator = 1;
+    static seniorModerator = 2;
+}
+
+class ModerationStatus {
+    static pending = 0;
+    static approved = 1;
+    static declined = 2;
+}
+
 exports.ThreadEventType = ThreadEventType;
 exports.ThreadType = ThreadType;
 exports.NotificationType = NotificationType;
@@ -203,3 +222,6 @@ exports.InteractionType = InteractionType;
 exports.AccountVisibility = AccountVisibility;
 exports.CoinTrasactionType = CoinTrasactionType;
 exports.Achievement = Achievement;
+exports.MeritScoreType = MeritScoreType;
+exports.ModeratorRole = ModeratorRole;
+exports.ModerationStatus = ModerationStatus;
