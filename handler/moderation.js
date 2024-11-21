@@ -1,8 +1,10 @@
 require('dotenv').config();
+const router = require('express').Router()
 const db = require('../service/chat/postgres')
+const auth = require('../middleware/auth.js')
 const {ModeratorRole, MeritScoreType, ModerationStatus} = require('../consts/enums.js')
 
-exports.addModerator = async (req, res) => {
+let addModerator = async (req, res) => {
     let {user, star, role} = req.body;
 
     let payload = {
@@ -27,7 +29,7 @@ exports.addModerator = async (req, res) => {
     }
 }
 
-exports.removeModerator = async (req, res) => {
+let removeModerator = async (req, res) => {
     let {id} = req.body;
 
     try {
@@ -51,7 +53,7 @@ exports.removeModerator = async (req, res) => {
     }
 }
 
-exports.updateModerator = async (req, res) => {
+let updateModerator = async (req, res) => {
     let {id, user, star, role} = req.body;
 
     let payload = {
@@ -79,7 +81,7 @@ exports.updateModerator = async (req, res) => {
     }
 }
 
-exports.getModerators = async (req, res) => {
+let getModerators = async (req, res) => {
     try {
         let r = await db.select('mod', {
             fields: ['*'],
@@ -100,7 +102,7 @@ exports.getModerators = async (req, res) => {
     }
 }
 
-exports.addMeritScore = async (req, res) => {
+let addMeritScore = async (req, res) => {
     let {user, score, type, star} = req.body;
 
     let payload = {
@@ -125,7 +127,7 @@ exports.addMeritScore = async (req, res) => {
     }
 }
 
-exports.imModerator = async (req, res) => {
+let imModerator = async (req, res) => {
     try {
         let r = await db.select('mod', {
             fields: ['*'],
@@ -155,7 +157,7 @@ exports.imModerator = async (req, res) => {
     }
 }
 
-exports.myScores = async (req, res) => {
+let myScores = async (req, res) => {
     try {
         let r = await db.select('merit', {
             fields: ['*'],
@@ -179,7 +181,7 @@ exports.myScores = async (req, res) => {
     }
 }
 
-exports.moderatePost = async (req, res) => {
+let moderatePost = async (req, res) => {
     let {id, mod, data} = req.body;
 
     try {
@@ -208,7 +210,7 @@ exports.moderatePost = async (req, res) => {
     }
 }
 
-exports.approvePost = async (req, res) => {
+let approvePost = async (req, res) => {
     let {id, data} = req.body;
 
     try {
@@ -237,7 +239,7 @@ exports.approvePost = async (req, res) => {
     }
 }
 
-exports.declinePost = async (req, res) => {
+let declinePost = async (req, res) => {
     let {id, data} = req.body;
 
     try {
@@ -266,7 +268,7 @@ exports.declinePost = async (req, res) => {
     }
 }
 
-exports.moveToPending = async (req, res) => {
+let moveToPending = async (req, res) => {
     let {id, data} = req.body;
 
     try {
@@ -295,7 +297,7 @@ exports.moveToPending = async (req, res) => {
     }
 }
 
-exports.getPosts = async (req, res) => {
+let getPosts = async (req, res) => {
     let {mod_status, limit, offset} = req.query;
 
     try {
@@ -314,3 +316,18 @@ exports.getPosts = async (req, res) => {
         });
     }
 }
+
+router.post('/add', auth.validate, addModerator)
+router.post('/remove', auth.validate, removeModerator)
+router.post('/update', auth.validate, updateModerator)
+router.get('/get', auth.validate, getModerators)
+router.post('/merit/add', auth.validate, addMeritScore)
+router.get('/im', auth.validate, imModerator)
+router.get('/merit', auth.validate, myScores)
+router.post('/moderate', auth.validate, moderatePost)
+router.post('/approve', auth.validate, approvePost)
+router.post('/decline', auth.validate, declinePost)
+router.post('/pending', auth.validate, moveToPending)
+router.get('/posts', auth.validate, getPosts)
+
+exports.router = router;

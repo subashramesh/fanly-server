@@ -28,7 +28,6 @@ const device = require('../handler/device.js');
 const data = require('../handler/data.js');
 const livekit = require('../livekit/livekit.cjs');
 const follow = require('../handler/follow.js');
-const ayf = require('../ayf/route.js');
 const search = require('../handler/search.js');
 const verification = require('../handler/verification.js');
 const suggest = require('../handler/suggest.js');
@@ -38,7 +37,9 @@ const achievement = require('../handler/achievment.js');
 const star = require('../handler/star.js');
 const places = require('../handler/places.js');
 
-router.use('/nn', ayf.router);
+const mod = require('../handler/moderation.js');
+
+router.use('/mod', mod.router);
 
 router.get('/test', handler.test);
 router.get('/test/otp', auth.validate, handler.testOTP);

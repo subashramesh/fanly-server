@@ -537,21 +537,13 @@ exports.checkName = async (req, res) => {
 
 exports.me = async (req, res) => {
     try {
-        let accounts = await db.select('account', {
-            fields: ['*'],
-            conditions: [
-                ['id', '=', req.user.id]
-            ]
-        })
+        let result = await db.fun('get_user', {
+                params: `${req.user.id},${req.user.id}`
+            })
     
-        if(accounts.length > 0){
-            let account = accounts[0];
-            let devices = await db.select('device', {
-                fields: ['*'],
-                conditions: [
-                    ['owner', '=', account.id]
-                ]
-            });
+        if(result.length > 0){
+            let account = result[0]['get_user'];
+            
             return res.status(200).json({
                 status: '200',
                 message: 'Success',
