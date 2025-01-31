@@ -172,7 +172,7 @@ exports.call = async (req, res) => {
                             const e = pushkit[i];
                             // generate uuid for call
                             call.uuid = uuid.v4()
-                            call['caller_id'] = account.normalized
+                            call['caller_id'] = account.dname
                             call['caller_name'] = account.dname
                             call['caller_id_type'] = 'number'
                             call['has_video'] = true
@@ -305,7 +305,7 @@ exports.invite = async (req, res) => {
         }, 'id').onConflict(['call', 'user']).merge()
 
         let ids = members.map(member => member.user)
-        let users = await db.select('account', {
+        var users = await db.select('account', {
             fields: ['*'],
             conditions: [
                 ['id', 'in', ids]
@@ -313,8 +313,19 @@ exports.invite = async (req, res) => {
         })
         let tokens = await chat.getTokens(user)
 
+        users = users.map(e => {
+            delete e.data
+            delete e.categories
+            delete e.device
+            return e
+        })
+
         let payload = callData[0]
-        payload.invite = req.user
+        let uu = req.user
+        delete uu.data
+        delete uu.categories
+        delete uu.device
+        payload.invite = uu
         payload.members = users
         payload.room = manager.getConversationId(payload.caller, payload.receiver)
         payload.created_at = new Date()
@@ -323,8 +334,6 @@ exports.invite = async (req, res) => {
 
         let pushkit = await chat.getPushKitTokens(user);
         var account;
-
-        console.log('pushkit', pushkit)
 
         let aa = await db.select('account', {
             fields: ['*'],
@@ -353,9 +362,9 @@ exports.invite = async (req, res) => {
                 pp.room = payload.room
 
 
-                pp['caller_id'] = account.normalized
-                pp['caller_name'] = account.dname
-                pp['caller_id_type'] = 'number'
+                // pp['caller_id'] = account.normalized
+                pp['caller_id'] = account.dname
+                pp['caller_id_type'] = 'generic'
                 pp['has_video'] = true
                 console.log('voip call:', pp)
                 aps.sendVoip(e, pp)
@@ -371,8 +380,11 @@ exports.invite = async (req, res) => {
                 messaging.message(tokens, message, {
                     title: `${name}`,
                     body: 'Group call invite, tap to join',
-                    sound: 'call.aiff',
-                    android_channel_id: 'channelId100',
+                    android: {
+                        notification: {
+                            channelId: 'channelId100',
+                        }
+                    }
                 })
             }
         }
@@ -389,6 +401,47 @@ exports.invite = async (req, res) => {
             status: '500',
             message: 'Internal Server Error'
         })
+    }
+}
+
+exports.isActive = async (req, res) => {
+    let id = req.params.id;
+
+    try {
+        let active = await db.select('call', {
+            fields: ['*'],
+            conditions: [
+                ['id', '=', id]
+            ]
+        })
+
+        if (active.length > 0) {
+            let payload = active[0]
+            if(payload.group){
+                let act = await rooms.isActive(`g-${payload.group}`)
+                payload.active = act
+            } else {
+                let act = await rooms.isActive(manager.getConversationId(payload.caller, payload.receiver))
+                payload.active = act
+            }
+            console.log('is active', payload)
+            return res.status(200).json({
+                status: '200',
+                message: 'Success',
+                data: payload.active
+            });
+        } else {
+            return res.status(404).json({
+                status: '404',
+                message: 'Not Found'
+            });
+        }
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            status: '500',
+            message: 'Internal Server Error'
+        });
     }
 }
 

@@ -23,7 +23,7 @@ exports.sendOTP = async (req, res) => {
 
 
         let s = await qikberry.sendOTP(otp, normalized);
-        if(s.status === 'OK'){
+        if(s){
             return res.status(200).json({
                 status: '200',
                 message: 'Success',

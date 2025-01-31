@@ -7,6 +7,11 @@ exports.eject = async (req, res) => {
     try {
         let device = req.user.device;
         let id = device.id;
+        await db.delete2('pushkit', {
+                    conditions: [
+                        ['user', '=', req.user.id]
+                    ]
+                })
         let result = await db.delete2('device', {
             conditions: [
                 ['id', '=', id]
@@ -218,11 +223,19 @@ async function watchers(req, res){
 
 exports.counter = async (req, res) => {
     try {
+        let cons = [
+            ['owner', '=', req.user.id],
+            ['seen', 'is', null],
+        ]
+
+        let star = req.user.star;
+
+        if (star) {
+            cons.push(['star', '=', star])
+        }
+
         let act = await db.count('activity', {
-            conditions: [
-                ['owner', '=', req.user.id],
-                ['seen', 'is', null]
-            ]
+            conditions: cons
         })
         // console.log(act)
         let data = {}

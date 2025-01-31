@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "27909173186",
+    "project_id": "fanly-in",
+    "storage_bucket": "fanly-in.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:27909173186:android:9a4dedfee6ff4d34f3f05b",
+        "android_client_info": {
+          "package_name": "com.fanly"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAo1xMJPq8ivnWv0kbv-Fv_teWRNIA9J2c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

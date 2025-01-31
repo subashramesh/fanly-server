@@ -11,9 +11,20 @@ async function transact(value, type, user, owner, post, star) {
             post: post,
             star: star
         }, 'id')
-        console.log(r)
         return r;
     }
+}
+
+async function refrain(type, user, owner, post) {
+    await db.delete2('coin_transaction', {
+        conditions: [
+            ['user', '=', user],
+            ['owner', '=', owner],
+            ['type', '=', type],
+            ['post', '=', post]
+        ],
+    })
+    return;
 }
 
 exports.getCoinBalance = async (req, res) => {
@@ -130,3 +141,4 @@ exports.getRanking = async (req, res) => {
 };
 
 exports.transact = transact
+exports.refrain = refrain

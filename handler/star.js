@@ -177,6 +177,21 @@ exports.getBanners = async (req, res) => {
             fields: ['*'],
             conditions: [['star', '=', star]]
         })
+        if(req.user){
+            let bannerIds = r.map((v) => v.id)
+            // get all banners in reminder table 
+            let reminders = await db.select('reminder', {
+                fields: ['*'],
+                conditions: [['banner', 'in', bannerIds], ['owner', '=', req.user.id]]
+            })
+            for(let i = 0; i < r.length; i++){
+                let reminder = reminders.find((v) => `${v.banner}` == `${r[i].id}`)
+                if(reminder){
+                    delete reminder.banner
+                    r[i].reminder = reminder
+                }
+            }
+        }
         return res.send({
             status: '200',
             message: 'Success',

@@ -17,6 +17,7 @@ exports.sendVoip = async (deviceToken, payload) => {
     notification.payload = payload;
     notification.priority = 5;
     notification.expiry = 0;
+    
 
     notification.pushType = 'voip';
     
@@ -40,6 +41,7 @@ exports.sendVoip = async (deviceToken, payload) => {
         console.log('PushKit notification sent:', response);
         try{
             response.failed.forEach((failed) => {
+                console.log(failed);
                 console.log(failed.response?.reason);
             })
         } catch(e) {

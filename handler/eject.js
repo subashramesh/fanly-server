@@ -4,6 +4,11 @@ exports.eject = async (req, res) => {
     let id = req.params.id;
 
     try {
+        await db.delete2('pushkit', {
+            conditions: [
+                ['user', '=', id]
+            ]
+        })
         await db.delete2('post', {
             conditions: [
                 ['owner', '=', id]

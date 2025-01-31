@@ -209,3 +209,112 @@ pm2 logs
 pm2 restart all
 pm2 logs
 pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+npm install pug
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+error: SELECT metadata FROM post WHERE metadata->'tags' ILIKE '%h%' - operator does not exist: jsonb ~~* unknown"
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pwd
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs
+pm2 restart all
+pm2 logs

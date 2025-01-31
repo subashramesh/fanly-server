@@ -340,17 +340,18 @@ async function getName(sender, receiver){
     if(result.length == 0){
         return `User::${sender}`
     }
-    let result2 = await db.select('contact', {
-        fields: ['*'],
-        conditions: [
-            ['phone', '=', result[0].normalized],
-            ['user', '=', receiver]
-        ]
-    })
-    if(result2.length == 0 ){
-        return `${result[0].normalized}`
-    }
-    return `${result2[0].name}`
+    // let result2 = await db.select('contact', {
+    //     fields: ['*'],
+    //     conditions: [
+    //         ['phone', '=', result[0].normalized],
+    //         ['user', '=', receiver]
+    //     ]
+    // })
+    // if(result2.length == 0 ){
+    //     return `${result[0].dname}`
+    //     // return `${result[0].normalized}`
+    // }
+    return `${result[0].dname || ''}`
 }
 
 async function getOnlyName(sender, receiver){
@@ -1286,8 +1287,13 @@ exports.getUser = async (req, res) => {
                     post = await db.count('post', {
                         conditions:[
                             ['owner', '=', id],
-                            ['star', '=', `${req.user.star}`]
+                            ['star', '=', `${req.user.star}`],
+                            ['state', '=', 0]
                         ]
+                    }).orWhere((qb) => {
+                        qb.where('owner', '=', id)
+                        qb.where('star', '=', `${req.user.star}`)
+                        qb.where('state', '=', 1)
                     })
                 } else {
                     post = await db.count('post', {

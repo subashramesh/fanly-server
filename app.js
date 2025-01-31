@@ -13,12 +13,21 @@ const app = express();
 require('dotenv').config();
 const socketIo = require('socket.io');
 const {Redis} = require('ioredis');
+
+const preview = require('./handler/preview.js');
+
 // const postgraphile = require('./animal/handler/postgraphile.js');
 // const graph = require('./handler/postgraphile.js');
 
-const io = socketIo();
+app.set('view engine', 'pug');
+
+const io = socketIo() ;
 app.io = io;
 global.io = io;
+
+app.use(preview.router);
+
+// app.use(cors());
 
 const redisHost = process.env.REDIS_HOST;
 const redisPort = process.env.REDIS_PORT;
@@ -34,7 +43,7 @@ io.adapter(createAdapter( pubClient, subClient ));
 
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization, X-Flavour");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization, X-Flavour, X-Star, X-Package");
   next();
 });
 

@@ -1,10 +1,17 @@
 const { Redis } = require('ioredis');
 const socket = require('./chat_socket.js');
+require('dotenv').config();
 
-const ROOM_PREFIX = 'room:';
-const USER_PREFIX = 'user:';
-
-const redisClient = new Redis();
+const ROOM_PREFIX = 'fanly::room:';
+const USER_PREFIX = 'fanly::user:';
+const redisHost = process.env.REDIS_HOST;
+const redisPort = process.env.REDIS_PORT;
+// const serviceUri = 'rediss://default:AVNS_7FeXjGYYdecFfnayCAL@caching-2f13ceb3-rahuvaran88-d22e.h.aivencloud.com:10923';
+// const pubClient = new Redis(redisPort, redisHost);
+const redisClient = new Redis({
+  port: redisPort,
+  host: redisHost
+});
 const pub = redisClient;
 const sub = redisClient.duplicate();
 
@@ -37,12 +44,13 @@ class Rooms {
         users: [],
         invited: [],
         listeners: [],
-        id: id
+        id: id,
+        lastEvent: null
       };
       await this.redisClient.set(roomKey, JSON.stringify(newRoom));
-      console.log(`Room '${id}' created successfully.`);
+      // console.log(`Room '${id}' created successfully.`);
     } else {
-      console.log(`Room '${id}' already exists.`);
+      // console.log(`Room '${id}' already exists.`);
     }
   }
 
@@ -60,7 +68,7 @@ class Rooms {
       }
       const room = JSON.parse(roomData);
       room.users = room.users.filter(u => u !== user);
-      room.invited = room.invited.filter(u => u !== user);
+      // room.invited = room.invited.filter(u => u !== user);
       return room;
     }).filter(room => room !== null);
 
@@ -81,16 +89,18 @@ class Rooms {
     await this.updateRoom(id, room => {
       if (!room.users.includes(user)) room.users.push(user);
       if (!room.listeners.includes(user)) room.listeners.push(user);
+      room.lastEvent = { type: 'add', user: user };
     });
-    console.log(`User '${user}' added to room '${id}'.`);
+    // console.log(`User '${user}' added to room '${id}'.`);
   }
 
   async addListener(id, user) {
     await this.ensureRoomExists(id);
     await this.updateRoom(id, room => {
       if (!room.listeners.includes(user)) room.listeners.push(user);
+      room.lastEvent = { type: 'addListener', user: user };
     });
-    console.log(`Listener '${user}' added to room '${id}'.`);
+    // console.log(`Listener '${user}' added to room '${id}'.`);
   }
 
   async remove(id, user) {
@@ -98,19 +108,19 @@ class Rooms {
     const room = await this.get(id);
     if (room) {
       room.users = room.users.filter(u => u !== user);
-      room.invited = room.invited.filter(u => u !== user);
+      room.lastEvent = { type: 'remove', user: user };
       await this.redisClient.set(roomKey, JSON.stringify(room));
-      console.log(`User '${user}' removed from room '${id}'.`);
+      // console.log(`User '${user}' removed from room '${id}'.`);
 
       if (room.users.length === 0) {
         this.emit(id);
         await this.redisClient.del(roomKey);
-        console.log(`Room '${id}' deleted.`);
+        // console.log(`Room '${id}' deleted.`);
       } else {
         this.emit(id);
       }
     } else {
-      console.log(`Room '${id}' does not exist.`);
+      // console.log(`Room '${id}' does not exist.`);
     }
   }
 
@@ -119,8 +129,9 @@ class Rooms {
     await this.updateRoom(id, room => {
       if (!room.invited.includes(user)) room.invited.push(user);
       if (!room.listeners.includes(user)) room.listeners.push(user);
+      room.lastEvent = { type: 'invite', user: user };
     });
-    console.log(`User '${user}' invited to room '${id}'.`);
+    // console.log(`User '${user}' invited to room '${id}'.`);
   }
 
   async inviteAll(id, users) {
@@ -130,8 +141,18 @@ class Rooms {
         if (!room.invited.includes(user)) room.invited.push(user);
         if (!room.listeners.includes(user)) room.listeners.push(user);
       });
+      room.lastEvent = { type: 'inviteAll', users: users };
     });
-    console.log(`Users '${users}' invited to room '${id}'.`);
+    // console.log(`Users '${users}' invited to room '${id}'.`);
+  }
+
+  async decline(id, user) {
+    await this.updateRoom(id, room => {
+      if(room){
+        room.lastEvent = { type: 'decline', user: user };
+      }
+    });
+    console
   }
 
   async users(id) {
@@ -139,7 +160,7 @@ class Rooms {
     if (room) {
       return room.users;
     } else {
-      console.log(`Room '${id}' does not exist.`);
+      // console.log(`Room '${id}' does not exist.`);
       return [];
     }
   }
@@ -149,7 +170,7 @@ class Rooms {
     if (room) {
       return room.invited;
     } else {
-      console.log(`Room '${id}' does not exist.`);
+      // console.log(`Room '${id}' does not exist.`);
       return [];
     }
   }
@@ -161,9 +182,9 @@ class Rooms {
 
   async list() {
     const roomIds = await this.listRoomIds();
-    console.log("List of rooms:");
+    // console.log("List of rooms:");
     roomIds.forEach(id => {
-      console.log(id);
+      // console.log(id);
     });
   }
 
@@ -187,14 +208,14 @@ class Rooms {
   async activeRooms(user) {
     const rooms = [];
     const roomIds = await this.listRoomIds();
-    console.log(`Checking active rooms for user '${user}' with rooms: ${roomIds}`);
+    // console.log(`Checking active rooms for user '${user}' with rooms: ${roomIds}`);
     for (const id of roomIds) {
       const room = await this.get(id);
       if (room.listeners.includes(user)) {
         rooms.push(room);
       }
     }
-    console.log(`Active rooms for user '${user}': ${rooms.length}`);
+    // console.log(`Active rooms for user '${user}': ${rooms.length}`);
     return rooms;
   }
 
@@ -213,13 +234,15 @@ class Rooms {
   async updateRoom(id, updateFn) {
     const roomKey = `${ROOM_PREFIX}${id}`;
     const room = await this.get(id);
-    updateFn(room);
-    // remove duplicates users, invited and listeners
-    room.users = [...new Set(room.users)];
-    room.invited = [...new Set(room.invited)];
-    room.listeners = [...new Set(room.listeners)];
-    await this.redisClient.set(roomKey, JSON.stringify(room));
-    await this.emit(id);
+    if(room){
+      updateFn(room);
+      // remove duplicates users, invited and listeners
+      room.users = [...new Set(room.users)];
+      room.invited = [...new Set(room.invited)];
+      room.listeners = [...new Set(room.listeners)];
+      await this.redisClient.set(roomKey, JSON.stringify(room));
+      await this.emit(id);
+    }
   }
 }
 

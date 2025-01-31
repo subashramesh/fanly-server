@@ -36,10 +36,15 @@ const coins = require('../handler/coins.js');
 const achievement = require('../handler/achievment.js');
 const star = require('../handler/star.js');
 const places = require('../handler/places.js');
+const preview = require('../handler/preview.js');
 
 const mod = require('../handler/moderation.js');
+const reminder = require('../handler/reminder.js');
+
+router.use('/preview', preview.router);
 
 router.use('/mod', mod.router);
+router.use('/reminder', reminder.router);
 
 router.get('/test', handler.test);
 router.get('/test/otp', auth.validate, handler.testOTP);
@@ -81,7 +86,7 @@ router.post('/star/banner/add', star.addBanner)
 router.post('/star/admin/add', authenticate.makeAdmin)
 router.post('/star/admin/remove', authenticate.removeAdmin)
 
-router.get('/star/banner/get', star.getBanners)
+router.get('/star/banner/get',auth.validate, star.getBanners)
 
 router.post('/live', auth.validate, live.go);
 router.get('/live', auth.validate, live.getLives);
@@ -170,6 +175,9 @@ router.get('/user/:id/posts/tagged', auth.validate, feeds.userTaggedPosts);
 router.get('/user/:id/reels', auth.validate, feeds.userReels);
 router.post('/user/:id/block', auth.validate, feeds.block);
 router.post('/user/:id/unblock', auth.validate, feeds.unblock);
+
+router.get('/user/blocked', auth.validate, feeds.blockedUsers);
+
 router.post('/user/recovery', auth.validate, authenticate.updateRecovery);
 router.post('/user/privacy', auth.validate, authenticate.updatePrivacy);
 
@@ -180,6 +188,7 @@ router.post('/highlight/:id/delete', auth.validate, highlight.delete);
 router.get('/user/:id/highlight', auth.validate, highlight.get);
 
 router.get('/hashtag/:tag/posts/:type', auth.validate, hashtag.posts);
+router.get('/hashtag/trending', auth.validate, hashtag.trending);
 
 router.get('/archive/status', auth.validate, highlight.getStatusArchive);
 router.get('/archive/post', auth.validate, post.archived);
@@ -209,6 +218,7 @@ router.post('/post/:id/g/:s', auth.validate, post.state);
 router.post('/collab/:id/:type', auth.validate, feeds.respondCollab);
 
 router.post('/comment/:id/delete', auth.validate, feeds.deleteComment);
+router.post('/comment/:id/edit', auth.validate, feeds.editComment);
 router.post('/comment/:id/like', auth.validate, feeds.likeComment);
 router.post('/comment/:id/unlike', auth.validate, feeds.unlikeComment);
 router.post('/comment/:id/reply', auth.validate, feeds.replyComment);
@@ -262,6 +272,7 @@ router.post('/status/privacy', auth.validate, status.updatePrivacy);
 router.post('/call', auth.validate, call.call);
 router.post('/call/:id/accept', auth.validate, call.accept);
 router.post('/call/:id/reject', auth.validate, call.reject);
+router.get('/call/:id/active', auth.validate, call.isActive);
 router.post('/call/:id/join', auth.validate, call.join);
 router.post('/call/:id/invite', auth.validate, call.invite);
 router.post('/call/:id/engage', auth.validate, call.engage);

@@ -3,7 +3,7 @@ const db = require('../service/chat/postgres')
 const feeds = require('./feeds.js')
 
 exports.get = async (req, res) => {
-    const  hashtag  = `#${req.params.tag}`;
+    const hashtag = `#${req.params.tag}`;
 
     const tags = await db.select('hashtag_view', {
         fields: ['*'],
@@ -11,7 +11,7 @@ exports.get = async (req, res) => {
             ['hashtag', '=', hashtag]
         ]
     });
-    if(tags.length){
+    if (tags.length) {
         const follow = await db.select('follow_hashtag', {
             fields: ['*'],
             conditions: [
@@ -36,10 +36,10 @@ exports.get = async (req, res) => {
 }
 
 exports.posts = async (req, res) => {
-    const  hashtag  = `#${req.params.tag}`;
-    const  type  = req.params.type;
+    const hashtag = `#${req.params.tag}`;
+    const type = req.params.type;
 
-    switch(type){
+    switch (type) {
         case 'reels':
         case 'top':
         case 'recent':
@@ -65,7 +65,7 @@ exports.posts = async (req, res) => {
 }
 
 exports.follow = async (req, res) => {
-    const  hashtag  = `#${req.params.tag}`;
+    const hashtag = `#${req.params.tag}`;
 
     const follow = await db.select('follow_hashtag', {
         fields: ['*'],
@@ -75,7 +75,7 @@ exports.follow = async (req, res) => {
         ]
     });
 
-    if(follow.length){
+    if (follow.length) {
         return res.send({
             status: '400',
             message: 'Bad Request (already following)',
@@ -96,7 +96,7 @@ exports.follow = async (req, res) => {
 }
 
 exports.unfollow = async (req, res) => {
-    const  hashtag  = `#${req.params.tag}`;
+    const hashtag = `#${req.params.tag}`;
 
     const follow = await db.select('follow_hashtag', {
         fields: ['*'],
@@ -106,7 +106,7 @@ exports.unfollow = async (req, res) => {
         ]
     });
 
-    if(follow.length){
+    if (follow.length) {
         await db.delete2('follow_hashtag', {
             conditions: [
                 ['uid', '=', req.user.id],
@@ -124,6 +124,34 @@ exports.unfollow = async (req, res) => {
             status: '400',
             message: 'Bad Request (not following)',
             data: null
+        });
+    }
+}
+
+exports.trending = async (req, res) => {
+    try {
+        var d;
+
+        if (req.user.star) {
+            d = await db.fun('get_trending_hashtags_by_star', {
+                params: `${req.user.star}`
+            });
+        } else {
+            d = await db.fun('get_trending_hashtags', {
+                params: ``
+            });
+        }
+
+        return res.send({
+            status: '200',
+            message: 'OK',
+            data: d
+        });
+    } catch (e) {
+        console.log(e)
+        return res.send({
+            status: '500',
+            message: 'Internal Server Error'
         });
     }
 }

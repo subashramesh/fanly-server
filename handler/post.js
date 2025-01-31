@@ -492,9 +492,19 @@ exports.state = async (req, res) => {
 
 exports.archived = async (req, res) => {
     try {
-        let data = await db.fun('get_archived_post_list', {
-            params: `${req.user.id}`
-        });
+        var data
+
+        let star = req.user.star
+
+        if(star){
+            data = await db.fun('get_archived_post_list_by_stars', {
+                params: `${req.user.id},${star}`
+            });
+        } else {
+            data = await db.fun('get_archived_post_list', {
+                params: `${req.user.id}`
+            });
+        }
 
         return res.send({
             status: '200',

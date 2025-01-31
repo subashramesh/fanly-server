@@ -60,7 +60,7 @@ const count = (table, options = { fields: {}, conditions: [] }) => {
               conditions.forEach(condition => {
                   builder.where(...condition)
               });
-          }).then(data => data)
+          });
 }
 
 const select = (table, options = { fields: [], conditions: [], orWhere: [], orderBy: null, order: 'ASC'}) => {

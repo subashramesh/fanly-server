@@ -6,7 +6,8 @@ const socket = require('./chat_socket.js')
 const coins = require('../handler/coins.js');
 
 const {Achievement} = require('../consts/enums.js')
-const achieve = require('../handler/achievment.js')
+const achieve = require('../handler/achievment.js');
+const { update } = require('./session.js');
 
 exports.processPosts = processPosts
 async function processPosts(req, posts) {
@@ -159,15 +160,50 @@ exports.feeds = async (req, res) => {
             case 'explore':
                 var explore
                 if(req.user.star){
-                    explore = await db.fun('get_public_posts_by_star', {
-                        params: `${id},${limit},${offset},${req.user.star}`
-                    });
+                    let ss = await db.select('star', {
+                        fields: ['children'],
+                        conditions: [
+                            ['id', '=', req.user.star]
+                        ]
+                    })
+                    let children = ss[0].children;
+                    if(children){
+                        children.push(req.user.star)
+                        var sss = '';
+                        children.forEach(e => {
+                            sss += `${e},`
+                        })
+                        sss = sss.substring(0, sss.length - 1);
+                        explore = await db.fun('get_public_posts_by_stars', {
+                            params: `${id},${limit},${offset},'{${sss}}'::bigint[]`
+                        });
+                    } else {
+                        explore = await db.fun('get_public_posts_by_star', {
+                            params: `${id},${limit},${offset},${req.user.star}`
+                        });
+                    }
                 } else {
                     explore = await db.fun('get_public_posts', {
                         params: `${id},${limit},${offset}`
                     });
                 }
                 let data3 = await processPosts(req, explore);
+
+                let removeIds = []
+
+                for(let e of data3){
+                    let mm = e.media
+                    if(!mm){
+                        removeIds.push(e.id)
+                    } else {
+                        let media = mm[0]
+                        if(`${media.type}` === '3'){
+                            removeIds.push(e.id)
+                        }
+                    }
+                }
+
+                data3 = data3.filter(e => !removeIds.includes(e.id))
     
                 return res.send({
                     status: '200',
@@ -912,6 +948,68 @@ exports.deleteComment = async (req, res) => {
     });
 }
 
+exports.editComment = async (req, res) => {
+    const { id } = req.params;
+    const user_id = req.user.id;
+
+    if (!id) {
+        return res.send({
+            status: '400',
+            message: 'Bad Request (id is empty)',
+            data: null
+        });
+    }
+    try {
+        let comment = await db.select('comment', {
+            fields: ['owner', 'post'],
+            conditions: [
+                ['id', '=', id],
+                ['owner', '=', user_id]
+            ]
+        })
+
+        if (comment.length == 0) {
+            return res.send({
+                status: '400',
+                message: 'Bad Request (comment not found)',
+                data: null
+            });
+        } else {
+            const { text } = req.body;
+            if (!text) {
+                return res.send({
+                    status: '400',
+                    message: 'Bad Request (comment is empty)',
+                    data: null
+                });
+            }
+            const editComment = await db.update('comment', {
+                fields:{
+                    text: text,
+                    updated_at: new Date()
+                },
+                conditions: [
+                    ['owner', '=', user_id],
+                    ['id', '=', id]
+                ]
+            })
+
+            return res.send({
+                status: '200',
+                message: 'OK',
+                data: editComment
+            });
+        }
+    } catch (error) {
+        console.log(error)
+        res.send({
+            status: '500',
+            message: `Internal Server Error ${error}`, 
+        })
+    }
+}
+
+
 exports.getComments = async (req, res) => {
     const { id } = req.params;
     const user_id = req.user.id;
@@ -928,6 +1026,8 @@ exports.getComments = async (req, res) => {
         const comments = await db.fun('get_comment_list', {
             params: `${user_id},${id}`
         });
+
+        console.log(comments)
     
         return res.send({
             status: '200',
@@ -1426,9 +1526,17 @@ exports.getSaved = async (req, res) => {
     let {limit, offset} = req.query;
 
     try {
-        let data = await db.fun('get_saved_posts', {
-            params: `${user_id}, ${limit}, ${offset}`
-        });
+        var data;
+        if(req.user.star){
+            data = await db.fun('get_saved_posts_by_star', {
+                params: `${user_id}, ${limit}, ${offset}, ${req.user.star}`
+            });
+            
+        } else {
+            data = await db.fun('get_saved_posts', {
+                params: `${user_id}, ${limit}, ${offset}`
+            });
+        }
     
         if (data) {
             let data2 = await processPosts(req, data);
@@ -1464,18 +1572,18 @@ exports.block = async (req, res) => {
             };
     
             let data = await db.insert('block', payload, 'id');
-            // await db.delete2('follow', {
-            //     conditions: [
-            //         ['uid', '=', uid],
-            //         ['fid', '=', req.user.id]
-            //     ]
-            // });
-            // await db.delete2('follow', {
-            //     conditions: [
-            //         ['fid', '=', uid],
-            //         ['uid', '=', req.user.id]
-            //     ]
-            // });
+            await db.delete2('follow', {
+                conditions: [
+                    ['user', '=', id],
+                    ['owner', '=', req.user.id]
+                ]
+            });
+            await db.delete2('follow', {
+                conditions: [
+                    ['owner', '=', id],
+                    ['user', '=', req.user.id]
+                ]
+            });
     
             if (data) {
                 socket.send([id, req.user.id], 'block', payload);
@@ -1549,6 +1657,47 @@ exports.unblock = async (req, res) => {
         return res.send({
             status: '400',
             message: 'Bad Request (id is empty)',
+            data: null
+        })
+    }
+}
+
+exports.blockedUsers = async (req, res) => {
+    let user_id = req.user.id;
+
+    try {
+        let users = await db.select('block', {
+            fields: ['user'],
+            conditions: [
+                ['owner', '=', user_id]
+            ]
+        })
+
+        let theyBlocked = await db.select('block', {
+            fields: ['owner'],
+            conditions: [
+                ['user', '=', user_id]
+            ]
+        })
+        for (let i = 0; i < users.length; i++) {
+            users[i].id = users[i].user
+            delete users[i].user
+        }
+        for (let i = 0; i < theyBlocked.length; i++) {
+            theyBlocked[i].id = theyBlocked[i].owner
+            delete theyBlocked[i].owner
+        }
+        return res.send({
+            status: '200',
+            message: 'OK',
+            data: users,
+            secondary: theyBlocked
+        })
+    } catch (error) {
+        console.log(error)
+        return res.send({
+            status: '500',
+            message: 'Internal Server Error',
             data: null
         })
     }

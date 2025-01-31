@@ -148,6 +148,8 @@ async function revokeNotify(user_id, type, data){
         case NotificationType.postShared: break;
         case NotificationType.suggestPeople: break;
         case NotificationType.react: 
+        coins.refrain(CoinTrasactionType.likeReceived, data.sender, user_id, data.post)
+        coins.refrain(CoinTrasactionType.likeGiven, user_id ,  data.sender, data.post)
         await db.delete2('activity', {
             conditions: [
                 ['owner', '=', user_id],
